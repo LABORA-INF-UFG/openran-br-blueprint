@@ -1,9 +1,9 @@
 # openran-br-blueprint
 
 ## Test
-We build and install two xApps that communicate with each other over the RMR library in the Near-RT RIC platform. We use a generic xApp (called XApp) that loops each second sending a message to a reactive xApp (called RMRXApp) that just listens to RMR messages and responds with an ack message. The figure below ilustrates this test:
+We build and install two xApps that communicate with each other over the RMR library in the Near-RT RIC platform. We use a generic xApp (called XApp) that loops each second sending a message to a reactive xApp (called RMRXApp) that just listens to RMR messages and responds with an ack message. The figure below illustrates this test:
 
-
+![xApp test](xapp_test.png)
 
 To perform the experiment, clone this repository:
 ```bash
