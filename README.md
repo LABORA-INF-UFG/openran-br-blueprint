@@ -21,9 +21,9 @@ The OpenRAN@Brasil Blueprint v0 is a virtual machine image containing an already
 ## Requirements
 
 **Resources**
-- RAM: 6GB
-- CPU: 2vCPU
-- Storage: 20GB
+- RAM: 6 GB (recommended)
+- CPU: 2 vCPU (minimum)
+- Storage: 20 GB (recommended)
 
 **Packets for LibVirt installation**
 - virt-manager 
