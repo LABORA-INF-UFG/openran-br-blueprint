@@ -1,7 +1,7 @@
 # OpenRAN@Brasil Blueprint v0
 The OpenRAN@Brasil Blueprint v0 is a virtual machine image containing an already installed and configured environment for developing and testing xApps on the Near-RT RIC implemented by [Open-RAN Software Community (OSC)](https://o-ran-sc.org/). We provide images for installing the VM using [Virtual Machine Manager](https://virt-manager.org/) and [VirtualBox](https://www.virtualbox.org/). We illustrate Blueprint v0 features below.
 
-![Blueprint v0](docs/figs/blueprint_v0.jpg)
+![Blueprint v0](docs/figs/blueprint_v0.png)
 
 **Features**
 - OSC's Near-RT RIC platform running as a Kubernetes cluster
