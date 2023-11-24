@@ -1,7 +1,31 @@
-# OpenRAN@Brasil Blueprint
+# OpenRAN@Brasil Blueprint v0
+The OpenRAN@Brasil Blueprint v0 is a virtual machine image containing an already installed and configured environment for developing and testing xApps on the Near-RT RIC implemented by [Open-RAN Software Community (OSC)](https://o-ran-sc.org/). We provide images for installing the VM using [Virtual Machine Manager](https://virt-manager.org/) and [VirtualBox](https://www.virtualbox.org/). We illustrate Blueprint v0 features below.
+
+![Blueprint v0](docs/figs/blueprint_v0.jpg)
+
+**Features**
+- OSC's Near-RT RIC platform running as a Kubernetes cluster
+- Local Docker Registry container for pushing Docker images
+- Local Helm Chart Repository (chartmuseum) container for pushing Helm charts
+- OSC's DMS_CLI tool for managing xApps
+
+**Softwares**
+- Ubuntu Server 20.04
+- Kubernetes v1.16.0 accessible without sudo
+- Helm v3.5.4
+- Docker  v20.10.21
+- OSC's Near-RT RIC Release H
+- DMS_CLI (xapp_onboarder) v1.0.0
+
 
 ## Requirements
 
+**Resources**
+- RAM: 6GB
+- CPU: 2vCPU
+- Storage: 20GB
+
+**Packets for LibVirt installation**
 - virt-manager 
 - qemu-kvm 
 - libvirt-daemon-system 
