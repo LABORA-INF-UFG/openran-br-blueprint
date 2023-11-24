@@ -1,22 +1,55 @@
 # OpenRAN@Brasil Blueprint
 
-## Test
-We build and install two xApps that communicate with each other over the RMR library in the Near-RT RIC platform. We use a generic xApp (called XApp) that loops each second sending a message to a reactive xApp (called RMRXApp) that just listens to RMR messages and responds with an ack message. The figure below illustrates this test:
+## Requirements
 
-![xApp test](xapp_test.png)
+- virt-manager 
+- qemu-kvm 
+- libvirt-daemon-system 
+- libvirt-clients 
+- bridge-utils
 
-To perform the experiment, clone this repository:
-```bash
-git clone "https://github.com/LABORA-INF-UFG/openran-br-blueprint"
-cd openran-br-blueprint
+## Deploying VM
+
+### 1st Step - Download the VM Image
+Download the [Virtual Machine image](https://drive.google.com/file/d/1yfi_3ZF0s9fDrRXnX73U2WOef0D8573p/view?usp=drive_link) and unzip it.
+
+``` bash
+unzip v0_Virt-manager.zip
 ```
 
-The reactive xApp (RMRXApp) is inside `rmrxapp-test/`, while the generic xApp is in `xapp-test/`. Build and install the RMRXApp executing its script:
-```bash
-bash xApps/rmrxapp-test/update_xapp.sh
+### 2nd Step - Create the virtual machine
+
+Start the `virt-Manager` with sudo privileges.
+
+Select the option `New Virtual Machine` under the `File` menu.
+
+Mark the option `Import existing disk image` before forwarding.
+
+![new vm](docs/figs/0-vm-install.jpg)
+
+Then, browse and select the downloaded image `v0_original.qcow2`
+
+![choose image](docs/figs/1-vm-install.jpg)
+
+You may need to add a new `Pool` by clicking in the `+` button marked with 0 in the image above.
+
+Next, set the operating system as `Ubuntu 20.04`, and advance.
+
+![choose os](docs/figs/2-vm-install.jpg)
+
+
+In the next screen choose the amount of memory and CPUs for the VM and go forward.
+
+Finally, name your VM and select `Finish`. The VM will be created and initialize.
+
+### 3rd Step - Accessing the virtual machine
+
+In order to access the VM, use the default user.
+``` bash
+username: openran-br
+password: openran-br
 ```
 
-Then, do the same with the generic xApp for them to start communicating:
-```bash
-bash xApps/xapp-test/update_xapp.sh
-```
+## Next Steps
+
+Test the deploy of an xApp [(Deploying xApps)](docs/xapp.md).
