@@ -10,12 +10,12 @@ To perform the experiment, clone this repository:
 git clone "https://github.com/LABORA-INF-UFG/openran-br-blueprint"
 ```
 
-The reactive xApp (RMRXApp) is inside XXXXXXXX, while the generic xApp is in XXXXXXX. Build and install the RMRXApp executing its script:
+The reactive xApp (RMRXApp) is inside `rmrxapp-test/`, while the generic xApp is in `xapp-test/`. Build and install the RMRXApp executing its script:
 ```bash
-bash openran-br-blueprint/rmrxapp-test/updateXXXXXXXXXXXXXXX
+bash openran-br-blueprint/rmrxapp-test/update_xapp.sh
 ```
 
 Then, do the same with the generic xApp for them to start communicating:
 ```bash
-bash openran-br-blueprint/xapp-test/updateXXXXXXXXXXXXXXX
+bash openran-br-blueprint/xapp-test/update_xapp.sh
 ```
