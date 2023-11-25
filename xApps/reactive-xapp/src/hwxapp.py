@@ -81,6 +81,11 @@ class HWXapp:
         metric_mgr = MetricManager(rmr_xapp)
         metric_mgr.send_metric()
 
+        # Registering callback for active xApp messages
+        rmr_xapp.register_callback(
+            self._handle_act_xapp_msg, 30000 # Message types: 30000 (receive), 30001 (send)
+        )
+
     def _handle_config_change(self, rmr_xapp, config):
         """
         Function that runs at start and on every configuration file change.
@@ -88,6 +93,19 @@ class HWXapp:
         rmr_xapp.logger.info("HWXapp.handle_config_change:: config: {}".format(config))
         rmr_xapp.config = config  # No mutex required due to GIL
 
+    # TODO: change this to reply message instead of send
+    def _handle_act_xapp_msg(self, xapp, summary, sbuf):
+        """
+        Function that responds to active xApp RMR message with an ACK
+        """
+        rmr_xapp.logger.info("_handleXappMessage called for msg type = " +
+                                   str(summary[rmr.RMR_MS_MSG_TYPE]) +
+                                   "with msg = " + str(summary[rmr.RMR_MS_PAYLOAD]))
+        rmr_xapp.logger.info("Sending ACK to the active xApp")
+        rmr_xapp.rmr_send("Ack".encode(), 30001)
+        
+        rmr_xapp.rmr_free(sbuf)
+    
     def _default_handler(self, rmr_xapp, summary, sbuf):
         """
         Function that processes messages for which no handler is defined

@@ -43,10 +43,10 @@ class HWXapp:
         """
         
         xapp.logger.set_level(Level.DEBUG)
-        xapp.logger.info("Level INFO")
-        xapp.logger.error("Level ERROR")
-        xapp.logger.warning("Level WARNING")
-        xapp.logger.debug("Level DEBUG")
+        # xapp.logger.info("Level INFO")
+        # xapp.logger.error("Level ERROR")
+        # xapp.logger.warning("Level WARNING")
+        # xapp.logger.debug("Level DEBUG")
 
         xapp.logger.info("HWXapp.post_init :: post_init called")
 
@@ -104,13 +104,17 @@ class HWXapp:
         A1PolicyHandler(self._xapp, Constants.A1_POLICY_REQ)
         SubscriptionHandler(self._xapp,Constants.SUBSCRIPTION_REQ)
 
+    # TODO: change "while True" to a flag indicating that the xApp is not being terminated
     def _loop (self, xapp):
         """
         Function that runs in loop from the xApp start until its end
         """
         xapp.logger.info("Running loop")
-        for i in range (0, 10):
-            self._xapp.logger.info("Loop {}".format(i))
+        i = 0
+        while True:
+            self._xapp.logger.info("Sending message to reactive xApp")
+            xapp.rmr_send("Request {}".format(i).encode(), 30000)
+            i+=1
         xapp.logger.info("Ended loop")
 
     def start(self):
