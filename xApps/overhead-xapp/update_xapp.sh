@@ -1,15 +1,16 @@
 #!/bin/bash
 
-xapp_name="overhead-xapp"
+namespace="ricxapp"
+xapp_name="overheadxapp"
 
 echo "----------------- Onboarding the xApp chart -----------------"
 dms_cli onboard init/config-file.json init/schema.json
 
 echo "----------------- Terminating xApp pod -----------------"
-dms_cli uninstall $xapp_name ricxapp
+dms_cli uninstall $xapp_name $namespace
 
 echo -n "Waiting pod termination"
-while kubectl get pods -n ricxapp | grep -q $xapp_name
+while kubectl get pods -n $namespace | grep -q $namespace-$xapp_name-
 do
     sleep 1 # seconds
     echo -n "."
@@ -26,12 +27,12 @@ echo "----------------- Pushing new image -----------------"
 docker push 127.0.0.1:5001/$xapp_name:1.0.0
 
 echo "----------------- Installing the xApp -----------------"
-dms_cli install $xapp_name 1.0.0 ricxapp
+dms_cli install $xapp_name 1.0.0 $namespace
 
 echo -n "Waiting pod creation"
-while ! kubectl get pods -n ricxapp | grep $xapp_name | grep -q "1/1";
+while ! kubectl get pods -n $namespace | grep $namespace-$xapp_name- | grep -q "1/1";
 do
-    if kubectl get pods -n ricxapp | grep $xapp_name | grep -q CrashLoopBackOff; then 
+    if kubectl get pods -n $namespace | grep $namespace-$xapp_name- | grep -q CrashLoopBackOff; then 
         printf "\n%s" "INSTALLATION ERROR: CrashLoopBackOff"
         break
     fi
@@ -41,4 +42,4 @@ done
 
 printf "\n"
 echo "----------------- Getting pod's logs -----------------"
-kubectl logs POD/$(kubectl get pods -n ricxapp | grep $xapp_name | awk '{print $1}') -n ricxapp
+kubectl logs POD/$(kubectl get pods -n $namespace | grep $namespace-$xapp_name- | awk '{print $1}') -n $namespace

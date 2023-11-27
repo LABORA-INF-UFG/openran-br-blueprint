@@ -27,6 +27,8 @@ from .handler import *
 from mdclogpy import Logger
 from mdclogpy import Level
 
+from time import sleep
+
 class HWXapp:
 
     def __init__(self):
@@ -105,6 +107,7 @@ class HWXapp:
         SubscriptionHandler(self._xapp,Constants.SUBSCRIPTION_REQ)
 
     # TODO: change "while True" to a flag indicating that the xApp is not being terminated
+    # TODO: add poll for RMR messages to check if there is an ACK from reactive xapp
     def _loop (self, xapp):
         """
         Function that runs in loop from the xApp start until its end
@@ -115,6 +118,7 @@ class HWXapp:
             self._xapp.logger.info("Sending message to reactive xApp")
             xapp.rmr_send("Request {}".format(i).encode(), 30000)
             i+=1
+            sleep(1)
         xapp.logger.info("Ended loop")
 
     def start(self):

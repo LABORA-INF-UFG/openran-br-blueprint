@@ -1,12 +1,12 @@
 {
-    "name": "overhead-xapp",
+    "name": "overheadxapp",
     "version": "1.0.0",
     "containers": [
         {
-            "name": "overhead-xapp",
+            "name": "overheadxapp",
             "image": {
                 "registry": "127.0.0.1:5001",
-                "name": "overhead-xapp",
+                "name": "overheadxapp",
                 "tag": "1.0.0"
             }
         }
@@ -15,19 +15,19 @@
         "ports": [
             {
                 "name": "http",
-                "container": "overhead-xapp",
+                "container": "overheadxapp",
                 "port": 8080,
                 "description": "http service"
             },
             {
                 "name": "rmrroute",
-                "container": "overhead-xapp",
+                "container": "overheadxapp",
                 "port": 4561,
-                "description": "rmr route port for overhead-xapp xapp"
+                "description": "rmr route port for overheadxapp xapp"
             },
             {
                 "name": "rmrdata",
-                "container": "overhead-xapp",
+                "container": "overheadxapp",
                 "port": 4560,
                 "rxMessages": ["RIC_SUB_RESP", "RIC_SUB_FAILURE", "RIC_SUB_DEL_RESP", "RIC_INDICATION"],
                 "txMessages": ["RIC_SUB_REQ", "RIC_SUB_DEL_REQ", "RIC_SGNB_ADDITION_REQ", "RIC_SGNB_ADDITION_ACK"],
@@ -36,7 +36,7 @@
                         {"name":"TESTNAME2","id":55556}
                 ],
                 "policies": [1],
-                "description": "rmr data port for overhead-xapp"
+                "description": "rmr data port for overheadxapp"
             }
         ]
     },
