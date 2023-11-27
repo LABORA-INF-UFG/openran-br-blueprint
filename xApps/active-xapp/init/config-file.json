@@ -29,13 +29,11 @@
                 "name": "rmrdata",
                 "container": "activexapp",
                 "port": 4560,
-                "rxMessages": ["RIC_SUB_RESP", "RIC_SUB_FAILURE", "RIC_SUB_DEL_RESP", "RIC_INDICATION"],
-                "txMessages": ["RIC_SUB_REQ", "RIC_SUB_DEL_REQ", "RIC_SGNB_ADDITION_REQ", "RIC_SGNB_ADDITION_ACK"],
+                "rxMessages": ["RIC_SUB_RESP", "RIC_SUB_FAILURE", "RIC_SUB_DEL_RESP", "RIC_INDICATION", "REACT_XAPP_ACK"],
+                "txMessages": ["RIC_SUB_REQ", "RIC_SUB_DEL_REQ", "RIC_SGNB_ADDITION_REQ", "RIC_SGNB_ADDITION_ACK", "ACT_XAPP_REQ"],
                 "mtypes" : [
-                        {"name":"TESTNAME1","id":55555},
-                        {"name":"TESTNAME2","id":55556},
-                        {"name":"SEND_ACT_XAPP_REQ","id":30000},
-                        {"name":"RCV_REACT_XAPP_ACK","id":30001}
+                    {"name":"ACT_XAPP_REQ","id":30000},
+                    {"name":"REACT_XAPP_ACK","id":30001}
                 ],
                 "policies": [1],
                 "description": "rmr data port for activexapp"
@@ -47,11 +45,14 @@
         "maxSize": 2072,
         "numWorkers": 1,
         "txMessages": [
-            "RIC_SUB_REQ", "A1_POLICY_RESP", "A1_POLICY_QUERY", "RIC_HEALTH_CHECK_RESP"
+            "RIC_SUB_REQ", "A1_POLICY_RESP", "A1_POLICY_QUERY", "RIC_HEALTH_CHECK_RESP",
+            "RIC_SGNB_ADDITION_ACK",
+            "ACT_XAPP_REQ"
         ],
         "rxMessages": [
             "RIC_SUB_RESP",
-            "A1_POLICY_REQ", "RIC_HEALTH_CHECK_REQ"
+            "A1_POLICY_REQ", "RIC_HEALTH_CHECK_REQ",
+            "REACT_XAPP_ACK"
         ],
     "policies": [1]
     },

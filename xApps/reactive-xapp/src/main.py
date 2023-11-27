@@ -16,12 +16,12 @@
 #
 # ==================================================================================
 
-from .hwxapp import HWXapp
+from .reactivexapp import ReactiveXapp
 
 
 def launchXapp():
-    hwxapp = HWXapp()
-    hwxapp.start()
+    reactivexapp = ReactiveXapp()
+    reactivexapp.start()
 
 
 if __name__ == "__main__":

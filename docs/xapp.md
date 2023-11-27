@@ -20,7 +20,7 @@ We build and install two xApps that communicate with each other over the RMR lib
 
 ![xApp test](figs/xapp_test.png)
 
-The reactive xApp (RMRXApp) is inside [reactive-xapp/](../xApps/rmrxapp-test), while the generic xApp is in [active-xapp/](../xApps/xapp-test/). Build and install the RMRXApp executing its script:
+The reactive xApp (RMRXApp) is inside [reactive-xapp/](../xApps/rmrxapp-test), while the generic xApp is in [active-xapp/](../xApps/xapp-test/). You must deploy the reactive xApp **before** the active xApp. Build and install the RMRXApp executing its script:
 ```bash
 bash xApps/reactive-xapp/update_xapp.sh
 ```

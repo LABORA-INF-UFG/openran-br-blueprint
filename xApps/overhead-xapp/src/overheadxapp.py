@@ -68,14 +68,14 @@ class OverheadXapp:
         """
         Function that runs at start and on every configuration file change.
         """
-        xapp.logger.info("HWXapp.handle_config_change:: config: {}".format(config))
+        xapp.logger.info("handle_config_change:: config: {}".format(config))
         xapp.config = config  # No mutex required due to GIL
         
     def _default_handler(self, xapp, summary, sbuf):
         """
         Function that processes messages for which no handler is defined
         """
-        xapp.logger.info("HWXapp.default_handler called for msg type = " +
+        xapp.logger.info("default_handler called for msg type = " +
                                    str(summary[rmr.RMR_MS_MSG_TYPE]))
         xapp.rmr_free(sbuf)
 

@@ -17,7 +17,7 @@
 # ==================================================================================
 
 from os import getenv
-from ricxappframe.xapp_frame import Xapp, rmr
+from ricxappframe.xapp_frame import RMRXapp, rmr
 
 
 from .utils.constants import Constants
@@ -27,113 +27,117 @@ from .handler import *
 from mdclogpy import Logger
 from mdclogpy import Level
 
-from time import sleep
+import json
 
-class HWXapp:
+class ReactiveXapp:
 
     def __init__(self):
         fake_sdl = getenv("USE_FAKE_SDL", False)
-        self._xapp = Xapp(self._loop,
-                                 #config_handler=self._handle_config_change,
+        self._rmr_xapp = RMRXapp(self._default_handler,
+                                 config_handler=self._handle_config_change,
                                  rmr_port=4560,
-                                 #post_init=self._post_init,
+                                 post_init=self._post_init,
                                  use_fake_sdl=bool(fake_sdl))
+        
+        # Registering callback for active xApp messages
+        self._rmr_xapp.register_callback(
+            handler=self._handle_act_xapp_msg, message_type=Constants.ACT_XAPP_REQ
+        )
 
-    def _post_init(self, xapp: Xapp):
+    # Executes after _BaseXapp init but before ending the RMRXapp init
+    def _post_init(self, rmr_xapp: RMRXapp):
         """
         Function that runs when xapp initialization is complete
         """
-        
-        xapp.logger.set_level(Level.DEBUG)
-        # xapp.logger.info("Level INFO")
-        # xapp.logger.error("Level ERROR")
-        # xapp.logger.warning("Level WARNING")
-        # xapp.logger.debug("Level DEBUG")
 
-        xapp.logger.info("HWXapp.post_init :: post_init called")
+        rmr_xapp.logger.info("post_init called")
+        
+        rmr_xapp.logger.set_level(Level.DEBUG)
+        #rmr_xapp.logger.info("Level INFO")
+        #rmr_xapp.logger.error("Level ERROR")
+        #rmr_xapp.logger.warning("Level WARNING")
+        #rmr_xapp.logger.debug("Level DEBUG")
 
         # Shared Data Layer (SDL)
-        sdl_mgr = SdlManager(xapp)
+        sdl_mgr = SdlManager(rmr_xapp)
         sdl_mgr.sdlGetGnbList()
 
         # SDL Alarm Manager (doesn't work because environmental variables are missing)
         # Missing env vars: ALARM_MGR_SERVICE_NAME, ALARM_MGR_SERVICE_PORT
-        #self.sdl_alarm_mgr = SdlAlarmManager(xapp)
+        #self.sdl_alarm_mgr = SdlAlarmManager(rmr_xapp)
         #self.sdl_alarm_mgr.checkSdl()
 
         # A1 Manager
         # Non-RT RIC is not running
-        #a1_mgr = A1PolicyManager(xapp)
+        #a1_mgr = A1PolicyManager(rmr_xapp)
         #a1_mgr.startup()
 
         # Subscription Manager
-        sub_mgr = SubscriptionManager(xapp)
+        sub_mgr = SubscriptionManager(rmr_xapp)
 
         enb_list = sub_mgr.get_enb_list() # Getting eNodeBs
-        xapp.logger.info("Number of eNBs: {}".format(len(enb_list)))
+        rmr_xapp.logger.info("Number of eNBs: {}".format(len(enb_list)))
         for enb in enb_list:
             sub_mgr.send_subscription_request(enb)
 
         gnb_list = sub_mgr.get_gnb_list() # Getting gNodeBs
-        xapp.logger.info("Number of gNBs: {}".format(len(gnb_list)))
+        rmr_xapp.logger.info("Number of gNBs: {}".format(len(gnb_list)))
         for gnb in gnb_list:
             sub_mgr.send_subscription_request(gnb)
 
         # Metric Manager (I don't remember it on the RIC architecture)
-        metric_mgr = MetricManager(xapp)
+        metric_mgr = MetricManager(rmr_xapp)
         metric_mgr.send_metric()
 
-    def _handle_config_change(self, xapp, config):
+    def _handle_config_change(self, rmr_xapp, config):
         """
         Function that runs at start and on every configuration file change.
         """
-        xapp.logger.info("HWXapp.handle_config_change:: config: {}".format(config))
-        xapp.config = config  # No mutex required due to GIL
-        
-    def _default_handler(self, xapp, summary, sbuf):
+        rmr_xapp.logger.info("handle_config_change:: config: {}".format(config))
+        rmr_xapp.config = config  # No mutex required due to GIL
+
+    def _handle_act_xapp_msg(self, rmr_xapp:RMRXapp, summary, sbuf):
+        """
+        Function that responds to active xApp RMR message with an ACK
+        """
+        rcv_payload = json.loads(summary[rmr.RMR_MS_PAYLOAD])
+        rmr_xapp.logger.debug("Received payload = {}".format(rcv_payload))
+        rmr_xapp.logger.info("Replying ACK {} to active xApp {}".format(rcv_payload["id"], rcv_payload["msg"]))
+        payload = json.dumps({"msg":"ACK", "id":rcv_payload["id"]}).encode()
+        if not rmr_xapp.rmr_rts(sbuf, new_payload=payload, new_mtype=Constants.REACT_XAPP_ACK):
+            rmr_xapp.logger.error("Message could not be replied")
+        #rmr_xapp.rmr_free(sbuf)
+        #rmr_xapp.rmr_send(payload, mtype=Constants.REACT_XAPP_ACK)
+        rmr_xapp.rmr_free(sbuf)
+    
+    def _default_handler(self, rmr_xapp, summary, sbuf):
         """
         Function that processes messages for which no handler is defined
         """
-        xapp.logger.info("HWXapp.default_handler called for msg type = " +
+        rmr_xapp.logger.info("HWXappdefault_handler called for msg type = " +
                                    str(summary[rmr.RMR_MS_MSG_TYPE]))
-        xapp.rmr_free(sbuf)
+        rmr_xapp.rmr_free(sbuf)
 
     def createHandlers(self):
         """
         Function that creates all the handlers for RMR Messages
         """
-        HealthCheckHandler(self._xapp, Constants.RIC_HEALTH_CHECK_REQ)
-        A1PolicyHandler(self._xapp, Constants.A1_POLICY_REQ)
-        SubscriptionHandler(self._xapp,Constants.SUBSCRIPTION_REQ)
+        HealthCheckHandler(self._rmr_xapp, Constants.RIC_HEALTH_CHECK_REQ)
+        A1PolicyHandler(self._rmr_xapp, Constants.A1_POLICY_REQ)
+        SubscriptionHandler(self._rmr_xapp,Constants.SUBSCRIPTION_REQ)
 
-    # TODO: change "while True" to a flag indicating that the xApp is not being terminated
-    # TODO: add poll for RMR messages to check if there is an ACK from reactive xapp
-    def _loop (self, xapp):
-        """
-        Function that runs in loop from the xApp start until its end
-        """
-        xapp.logger.info("Running loop")
-        i = 0
-        while True:
-            self._xapp.logger.info("Sending message to reactive xApp")
-            xapp.rmr_send("Request {}".format(i).encode(), 30000)
-            i+=1
-            sleep(1)
-        xapp.logger.info("Ended loop")
-
-    def start(self):
+    def start(self, thread=False):
         """
         This is a convenience function that allows this xapp to run in Docker
         for "real" (no thread, real SDL), but also easily modified for unit testing
         (e.g., use_fake_sdl). The defaults for this function are for the Dockerized xapp.
         """
-        self._xapp.logger.set_level(Level.DEBUG)
-        self.createHandlers()
-        self._xapp.run()
+        #self.createHandlers()
+        self._rmr_xapp.run(thread, rmr_timeout=5) # Wait 5 second for RMR messages
 
     def stop(self):
         """
         can only be called if thread=True when started
         TODO: could we register a signal handler for Docker SIGTERM that calls this?
         """
-        self._xapp.stop()
+        self._rmr_xapp.stop()
