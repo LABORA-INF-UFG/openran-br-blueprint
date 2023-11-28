@@ -11,11 +11,11 @@ The OpenRAN@Brasil Blueprint v0 is a virtual machine image containing an already
 
 **Softwares**
 - Ubuntu Server 20.04
-- Kubernetes v1.16.0 accessible without sudo
+- Kubernetes v1.16.0 (no sudo)
 - Helm v3.5.4
-- Docker  v20.10.21
+- Docker  v20.10.21 (no sudo)
 - OSC's Near-RT RIC Release H
-- DMS_CLI (xapp_onboarder) v1.0.0
+- DMS_CLI v1.0.0 (xapp_onboarder)
 
 
 ## Requirements
