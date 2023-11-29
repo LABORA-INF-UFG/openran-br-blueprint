@@ -102,12 +102,12 @@ class ReactiveXapp:
         """
         rcv_payload = json.loads(summary[rmr.RMR_MS_PAYLOAD])
         rmr_xapp.logger.debug("Received payload = {}".format(rcv_payload))
+        
         rmr_xapp.logger.info("Replying ACK {} to active xApp {}".format(rcv_payload["id"], rcv_payload["msg"]))
         payload = json.dumps({"msg":"ACK", "id":rcv_payload["id"]}).encode()
         if not rmr_xapp.rmr_rts(sbuf, new_payload=payload, new_mtype=Constants.REACT_XAPP_ACK):
             rmr_xapp.logger.error("Message could not be replied")
-        #rmr_xapp.rmr_free(sbuf)
-        #rmr_xapp.rmr_send(payload, mtype=Constants.REACT_XAPP_ACK)
+
         rmr_xapp.rmr_free(sbuf)
     
     def _default_handler(self, rmr_xapp, summary, sbuf):

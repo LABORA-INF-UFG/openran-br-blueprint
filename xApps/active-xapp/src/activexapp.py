@@ -114,7 +114,6 @@ class ActiveXapp:
         (e.g., use_fake_sdl). The defaults for this function are for the Dockerized xapp.
         """
         self._xapp.logger.set_level(Level.DEBUG)
-        self.createHandlers()
         self._xapp.run()
 
     def stop(self):
