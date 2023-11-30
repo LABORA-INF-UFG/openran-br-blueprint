@@ -1,5 +1,7 @@
 # OpenRAN@Brasil Blueprint
 
+All test xApps below were made by modifying OSC's [Hello-World Python Framework xApp](https://github.com/o-ran-sc/ric-app-hw-python).
+
 ## Deploying xApps
 
 To perform the xApp deployment experiments, clone this repository:
