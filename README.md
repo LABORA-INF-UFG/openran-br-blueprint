@@ -41,9 +41,26 @@ Download the [Virtual Machine image](https://drive.google.com/file/d/1yfi_3ZF0s9
 unzip v0_Virt-manager.zip
 ```
 
-### 2nd Step - Create the virtual machine
+### 2nd Step - Create the virtual network
 
 Start the `virt-Manager` with sudo privileges.
+
+Double click the `QEMU/KVM` engine.
+
+Go to the `Virtual Network` tab.
+
+Delete the `default` network.
+
+![delete vn](docs/figs/3-vn-deletion.jpg)
+
+Create a new Virtual Network with name `Near-RT-Network` and IP address mask `192.168.122.0/24`.
+
+![create vn](docs/figs/4-vn-info.jpg)
+
+
+### 3rd Step - Create the virtual machine
+
+In the `virt-Manager` main window, started with sudo privileges.
 
 Select the option `New Virtual Machine` under the `File` menu.
 
@@ -61,12 +78,17 @@ Next, set the operating system as `Ubuntu 20.04`, and advance.
 
 ![choose os](docs/figs/2-vm-install.jpg)
 
-
 In the next screen choose the amount of memory and CPUs for the VM and go forward.
 
-Finally, name your VM and select `Finish`. The VM will be created and initialize.
+Now, name your VM, mark the option `Customize configuration before install`, make sure the correct `Virtual Network` is selected, and `Finish` the creation. The VM will be created and initialize.
 
-### 3rd Step - Accessing the virtual machine
+![finish](docs/figs/5-vm-finish.jpg)
+
+The configuration window for the Virtual Machine will open. In the `NIC` component, change the MAC address to `52:54:00:52:54:00`, then `Apply` and choose `Begin Installation`.
+
+![change mac](docs/figs/6-vm-mac.jpg)
+
+### 4th Step - Accessing the virtual machine
 
 In order to access the VM, use the default user.
 ``` bash
