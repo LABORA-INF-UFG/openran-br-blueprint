@@ -34,6 +34,10 @@ The OpenRAN@Brasil Blueprint v0 is a virtual machine image containing an already
 
 ## Deploying VM
 
+Next, we show how to deploy the virtual machine using the `Virt-Manager GUI`.
+
+But, you can also follow the steps to deploy in the [Virtual Box](docs/virtual-box-deploy.md).
+
 ### 1st Step - Download the VM Image
 Download the [Virtual Machine image](https://drive.google.com/file/d/1yfi_3ZF0s9fDrRXnX73U2WOef0D8573p/view?usp=drive_link) and unzip it.
 
