@@ -5,7 +5,7 @@ Download the [Virtual Box image](https://drive.google.com/file/d/1X1eNDJQCD5gxfR
 
 ### 2nd Step - Create the virtual network
 
-In the `Virtual Box` open the `File/Preferences...` menu, and go the `Network` tab.
+In the `Virtual Box` window, open the `File > Preferences > Network Manager` menu, and click on the `NAT Network` tab.
 
 On the right side, click in the button with a NIC figure and a plus sign to add a new network.
 
