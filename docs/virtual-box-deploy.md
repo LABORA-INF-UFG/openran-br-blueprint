@@ -13,13 +13,20 @@ Select the created network by double-clicking it.
 
 Change its name to `Near-RT-Network`, the Network CIDR to `192.168.122.0/24`, and enable the support for `DHCP`.
 
-Select the `Port Forwarding` button.
+Select `Port Forwarding`.
 
 On the right side of the screen, click in the button with a plus sign to add a new rule to enable SSH.
 
+Enter the following parameters:
+- Protocol: TCP
+- Host IP Address: 127.0.0.1
+- Host Port: 2222 (you can choose any)
+- Guest IP: 192.168.122.182
+- Guest Port: 22
+
 ![network port](figs/vb-port.jpg)
 
-Now finish the Port Forwarding and Virtual Network configuration, clicking the `OK` button.
+Now finish the Port Forwarding and Virtual Network configuration by clicking on the `OK` or `Apply` button.
 
 ### 3rd Step - Create the virtual machine
 
@@ -49,8 +56,9 @@ password: openran-br
 
 You can also access it through SSH with the port forwarded previously.
 ```bash
-ssh openran-br@127.0.0.1 -p 2222
+ssh openran-br@127.0.0.1 -p <forwarded-port>
 ```
+If using our values, `<forwarded-port>` should be `2222`.
 
 ## Next Steps
 
