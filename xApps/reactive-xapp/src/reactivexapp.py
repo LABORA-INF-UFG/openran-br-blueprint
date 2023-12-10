@@ -18,7 +18,7 @@
 
 from os import getenv
 from ricxappframe.xapp_frame import RMRXapp, rmr
-
+import signal
 
 from .utils.constants import Constants
 from .manager import *
@@ -43,6 +43,11 @@ class ReactiveXapp:
         self._rmr_xapp.register_callback(
             handler=self._handle_act_xapp_msg, message_type=Constants.ACT_XAPP_REQ
         )
+
+        # Registering handlers for signals
+        signal.signal(signal.SIGTERM, self._handle_signal)
+        signal.signal(signal.SIGQUIT, self._handle_signal)
+        signal.signal(signal.SIGINT, self._handle_signal)
 
     # Executes after _BaseXapp init but before ending the RMRXapp init
     def _post_init(self, rmr_xapp: RMRXapp):
@@ -69,8 +74,8 @@ class ReactiveXapp:
 
         # A1 Manager
         # Non-RT RIC is not running
-        #a1_mgr = A1PolicyManager(rmr_xapp)
-        #a1_mgr.startup()
+        a1_mgr = A1PolicyManager(rmr_xapp)
+        a1_mgr.startup()
 
         # Subscription Manager
         sub_mgr = SubscriptionManager(rmr_xapp)
@@ -110,6 +115,13 @@ class ReactiveXapp:
 
         rmr_xapp.rmr_free(sbuf)
     
+    def _handle_signal(self, signum: int, frame):
+        """
+        Function called when a Kubernetes signal is received that stops the xApp execution.
+        """
+        self._xapp.logger.info("Received signal {} to stop the xApp".format(signal.Signals(signum).name))
+        self.stop()
+
     def _default_handler(self, rmr_xapp, summary, sbuf):
         """
         Function that processes messages for which no handler is defined

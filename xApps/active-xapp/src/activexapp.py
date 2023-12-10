@@ -18,7 +18,7 @@
 
 from os import getenv
 from ricxappframe.xapp_frame import Xapp, rmr
-
+import signal
 
 from .utils.constants import Constants
 from .manager import *
@@ -51,8 +51,20 @@ class ActiveXapp:
         # Flag for shutting down the xApp
         self.shutdown = False
 
+        # Registering handlers for signals
+        signal.signal(signal.SIGTERM, self._handle_signal)
+        signal.signal(signal.SIGQUIT, self._handle_signal)
+        signal.signal(signal.SIGINT, self._handle_signal)
+
         self._xapp.logger.set_level(Level.DEBUG)
     
+    def _handle_signal(self, signum: int, frame):
+        """
+        Function called when a Kubernetes signal is received that stops the xApp execution.
+        """
+        self._xapp.logger.info("Received signal {} to stop the xApp".format(signal.Signals(signum).name))
+        self.stop()
+
     def _default_handler(self, xapp, summary, sbuf):
         xapp.logger.info(
             "Received unknow message type {} with payload = {}".format(
@@ -93,7 +105,6 @@ class ActiveXapp:
         except queue.Empty: # the get timed out
             pass
 
-    # TODO: change "while True" to a flag indicating that the xApp is not being terminated
     def _entrypoint (self, xapp: Xapp):
         """
         Function that runs in loop from the xApp start until its end
@@ -113,7 +124,6 @@ class ActiveXapp:
         for "real" (no thread, real SDL), but also easily modified for unit testing
         (e.g., use_fake_sdl). The defaults for this function are for the Dockerized xapp.
         """
-        self._xapp.logger.set_level(Level.DEBUG)
         self._xapp.run()
 
     def stop(self):
