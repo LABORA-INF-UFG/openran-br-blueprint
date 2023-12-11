@@ -119,7 +119,7 @@ class ReactiveXapp:
         """
         Function called when a Kubernetes signal is received that stops the xApp execution.
         """
-        self._xapp.logger.info("Received signal {} to stop the xApp".format(signal.Signals(signum).name))
+        self._rmr_xapp.logger.info("Received signal {} to stop the xApp".format(signal.Signals(signum).name))
         self.stop()
 
     def _default_handler(self, rmr_xapp, summary, sbuf):
