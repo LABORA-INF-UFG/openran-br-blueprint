@@ -90,19 +90,19 @@ class ActiveXapp:
         if not xapp.rmr_send(payload, Constants.ACT_XAPP_REQ):
             xapp.logger.error("Message could not be sent")
 
-
     def _receive_RMR_message(self, xapp:Xapp):
-        rmr_timeout = 1 # seconds
+        message_it = self._xapp.rmr_get_messages()
         try:
             while True:
-                (summary, sbuf) = xapp._rmr_loop.rcv_queue.get(block=True, timeout=rmr_timeout)
-                # dispatch
+                summary, sbuf = next(message_it)
+                self._xapp.logger.info(summary[rmr.RMR_MS_MSG_TYPE])
                 func = xapp._dispatch.get(summary[rmr.RMR_MS_MSG_TYPE], None)
                 if not func:
                     func = xapp._default_handler
-                xapp.logger.debug("run: invoking msg handler on type {}".format(summary[rmr.RMR_MS_MSG_TYPE]))
+                xapp.logger.debug("invoking msg handler on type {}".format(summary[rmr.RMR_MS_MSG_TYPE]))
                 func(xapp, summary, sbuf)
-        except queue.Empty: # the get timed out
+                xapp.rmr_free(sbuf)
+        except StopIteration:
             pass
 
     def _entrypoint (self, xapp: Xapp):
