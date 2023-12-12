@@ -1,21 +1,27 @@
 ## Deploying VM
 
 ### 1st Step - Download the VM Image
-Download the [Virtual Box image](https://drive.google.com/file/d/17vVi04MbaEYw-WCJUPb4mZ3NbQ2I0bik/view?usp=drive_link](https://drive.google.com/file/d/17vVi04MbaEYw-WCJUPb4mZ3NbQ2I0bik/view?usp=sharing).
+Download the [Virtual Box Image](https://drive.google.com/file/d/17vVi04MbaEYw-WCJUPb4mZ3NbQ2I0bik/view?usp=sharing).
 
 ### 2nd Step - Create the virtual machine
 
-Double-click the Virtual Box Image downloaded at the 1st Step.
+Double-click the Virtual Box Image downloaded in the 1st Step.
+
+![VM File](docs/figs/vm_ova_file.png)
 
 In the opened import window you can change the configuration of the Virtual Machine vCPU and memory resources.
+
+![VM Import Screen](docs/figs/vm_import_screen.png)
 
 Click `Finish` and wait for the VM to be created.
 
 ### 3rd Step - Accessing the virtual machine
 
-Double click on your VM to start it.
+Double-click on your VM to start it.
 
-In order to access the VM, use the default user.
+![VM selection](docs/figs/vm_select_screen.png)
+
+To access the VM, use the default user.
 ``` bash
 username: openran-br
 password: openran-br
@@ -33,4 +39,4 @@ ssh openran-br@<vm_ip>
 
 ## VM validation
 
-In order to validate the Near-RT RIC, deploy the test xApps as described in [Deploying xApps](docs/xapp.md).
+To validate the Near-RT RIC, deploy the test xApps as described in [Deploying xApps](docs/xapp.md).
