@@ -83,6 +83,16 @@ username: openran-br
 password: openran-br
 ```
 
-## Next Steps
+Inside the VM terminal, you can get its IP address by executing:
+```bash
+ip a | grep eth0
+```
 
-Test the deploy of an xApp [(Deploying xApps)](docs/xapp.md).
+To access the VM via SSH, you can use its IP address and the default user.
+```bash
+ssh openran-br@<vm_ip>
+```
+
+## VM validation
+
+In order to validate the Near-RT RIC, deploy the test xApps as described in [Deploying xApps](docs/xapp.md).
