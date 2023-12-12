@@ -33,4 +33,4 @@ ssh openran-br@<vm_ip>
 
 ## VM validation
 
-In order to validate the Near-RT RIC, deploy the test xApps as described in [(Deploying xApps)](docs/xapp.md).
+In order to validate the Near-RT RIC, deploy the test xApps as described in [Deploying xApps](docs/xapp.md).
