@@ -73,7 +73,7 @@ In the next screen choose the amount of memory and vCPUs for the VM and go forwa
 
 Now, name your VM and select a virtual network to connect your VM. 
 
-In "Network Selection", you can select the virtual network of your choice.
+In "Network selection", you can select the virtual network of your choice.
 
 ![finish](docs/figs/5-vm-finish.jpg)
 
