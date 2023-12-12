@@ -1,52 +1,19 @@
 ## Deploying VM
 
 ### 1st Step - Download the VM Image
-Download the [Virtual Box image](https://drive.google.com/file/d/1X1eNDJQCD5gxfRPwFnXYsnrkxNLhmcsS).
+Download the [Virtual Box image](https://drive.google.com/file/d/17vVi04MbaEYw-WCJUPb4mZ3NbQ2I0bik/view?usp=drive_link](https://drive.google.com/file/d/17vVi04MbaEYw-WCJUPb4mZ3NbQ2I0bik/view?usp=sharing).
 
-### 2nd Step - Create the virtual network
-
-In the `Virtual Box` window, open the `File > Preferences > Network Manager` menu, and click on the `NAT Network` tab.
-
-On the right side, click in the button with a NIC figure and a plus sign to add a new network.
-
-Select the created network by double-clicking it.
-
-Change its name to `Near-RT-Network`, the Network CIDR to `192.168.122.0/24`, and enable the support for `DHCP`.
-
-Select `Port Forwarding`.
-
-On the right side of the screen, click in the button with a plus sign to add a new rule to enable SSH.
-
-Enter the following parameters:
-- Protocol: TCP
-- Host IP Address: 127.0.0.1
-- Host Port: 2222 (you can choose any)
-- Guest IP: 192.168.122.182
-- Guest Port: 22
-
-![network port](figs/vb-port.jpg)
-
-Now finish the Port Forwarding and Virtual Network configuration by clicking on the `OK` or `Apply` button.
-
-### 3rd Step - Create the virtual machine
+### 2nd Step - Create the virtual machine
 
 Double-click the Virtual Box Image downloaded at the 1st Step.
 
-In the opened import window you can inspect the configuration of the Virtual Machine.
+In the opened import window you can change the configuration of the Virtual Machine vCPU and memory resources.
 
-Change the `MAC Address Policy` to `Include all network adapter MAC addresses`, and click the button `import`.
+Click `Finish` and wait for the VM to be created.
 
-After the import process finish, select the created vm with the mouse right button and click `Settings`.
+### 3rd Step - Accessing the virtual machine
 
-In the `Network` tab, make sure the Network Adapter is enabled and attached to a `NAT Network` with the name `Near-RT-Network`.
-
-Also, in the `Advanced` tab, change the MAC Address to `525400525400`, and finish with `OK` button.
-
-![network port](figs/vb-mac.jpg)
-
-### 4th Step - Accessing the virtual machine
-
-The Virtual Machine is ready to start.
+Double click on your VM to start it.
 
 In order to access the VM, use the default user.
 ``` bash
@@ -54,12 +21,16 @@ username: openran-br
 password: openran-br
 ```
 
-You can also access it through SSH with the port forwarded previously.
+Inside the VM terminal, you can get its IP address by executing:
 ```bash
-ssh openran-br@127.0.0.1 -p <forwarded-port>
+ip a | grep eth0
 ```
-If using our values, `<forwarded-port>` should be `2222`.
 
-## Next Steps
+To access the VM via SSH, you can use its IP address and the default user.
+```bash
+ssh openran-br@<vm_ip>
+```
 
-Test the deploy of an xApp [(Deploying xApps)](docs/xapp.md).
+## VM validation
+
+In order to validate the Near-RT RIC, deploy the test xApps as described in [(Deploying xApps)](docs/xapp.md).
