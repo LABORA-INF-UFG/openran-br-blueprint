@@ -7,11 +7,11 @@ Download the [Virtual Box Image](https://drive.google.com/file/d/17vVi04MbaEYw-W
 
 Double-click the Virtual Box Image downloaded in the 1st Step.
 
-![VM File](docs/figs/vm_ova_file.png)
+![VM File](figs/vm_ova_file.png)
 
 In the opened import window you can change the configuration of the Virtual Machine vCPU and memory resources.
 
-![VM Import Screen](docs/figs/vm_import_screen.png)
+![VM Import Screen](figs/vm_import_screen.png)
 
 Click `Finish` and wait for the VM to be created.
 
@@ -19,7 +19,7 @@ Click `Finish` and wait for the VM to be created.
 
 Double-click on your VM to start it.
 
-![VM selection](docs/figs/vm_select_screen.png)
+![VM selection](figs/vm_select_screen.png)
 
 To access the VM, use the default user.
 ``` bash
