@@ -71,7 +71,8 @@ Next, set the operating system as `Ubuntu 20.04`, and advance.
 
 In the next screen choose the amount of memory and vCPUs for the VM and go forward.
 
-Now, name your VM and select a virtual network to connect your VM. In this step, you can set up the virtual network of your choice.
+Now, name your VM and select a virtual network to connect your VM. 
+In this step 2, you can select the virtual network of your choice.
 
 ![finish](docs/figs/5-vm-finish.jpg)
 
