@@ -65,7 +65,7 @@ class ReactiveXapp:
 
         # Shared Data Layer (SDL)
         sdl_mgr = SdlManager(rmr_xapp)
-        sdl_mgr.sdlGetGnbList()
+        #sdl_mgr.sdlGetGnbList()
 
         # SDL Alarm Manager (doesn't work because environmental variables are missing)
         # Missing env vars: ALARM_MGR_SERVICE_NAME, ALARM_MGR_SERVICE_PORT
@@ -80,10 +80,11 @@ class ReactiveXapp:
         # Subscription Manager
         sub_mgr = SubscriptionManager(rmr_xapp)
 
-        enb_list = sub_mgr.get_enb_list() # Getting eNodeBs
-        rmr_xapp.logger.info("Number of eNBs: {}".format(len(enb_list)))
-        for enb in enb_list:
-            sub_mgr.send_subscription_request(enb)
+        # There is no eNodeB simulated by E2 Sim
+        # enb_list = sub_mgr.get_enb_list() # Getting eNodeBs
+        # rmr_xapp.logger.info("Number of eNBs: {}".format(len(enb_list)))
+        # for enb in enb_list:
+        #     sub_mgr.send_subscription_request(enb)
 
         gnb_list = sub_mgr.get_gnb_list() # Getting gNodeBs
         rmr_xapp.logger.info("Number of gNBs: {}".format(len(gnb_list)))

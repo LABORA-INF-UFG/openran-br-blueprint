@@ -24,6 +24,8 @@ from ricxappframe.xapp_frame import RMRXapp
 import json
 from ..utils.constants import Constants
 from ._BaseManager import _BaseManager
+from ricxappframe.entities.rnib.nb_identity_pb2 import NbIdentity
+from ricxappframe.entities.rnib.nodeb_info_pb2 import Node
 
 class SubscriptionManager(_BaseManager):
 
@@ -32,18 +34,33 @@ class SubscriptionManager(_BaseManager):
     def __init__(self, rmr_xapp: RMRXapp):
         super().__init__(rmr_xapp)
 
+    def nb_to_dict(self, nb_id):
+        return {
+            'inventory_name': nb_id.inventory_name.decode('utf-8') if isinstance(nb_id.inventory_name, bytes) else nb_id.inventory_name,
+            'global_nb_id': {
+                'plmn_id': nb_id.global_nb_id.plmn_id.decode('utf-8') if isinstance(nb_id.global_nb_id.plmn_id, bytes) else nb_id.global_nb_id.plmn_id,
+                'nb_id': nb_id.global_nb_id.nb_id.decode('utf-8') if isinstance(nb_id.global_nb_id.nb_id, bytes) else nb_id.global_nb_id.nb_id,
+            },
+            'connection_status': nb_id.connection_status,
+        }
+        #return nb_id.__str__()
+        #return "{}_{}_{}".format(nb_id.global_nb_id.plmn_id, nb_id.global_nb_id.nb_id, nb_id.connection_status)
+
+    def nb_list_to_dict(self, nb_id_list):
+        return [self.nb_to_dict(nb_id) for nb_id in nb_id_list]
+
     def get_gnb_list(self):
-        gnblist = self._rmr_xapp.get_list_gnb_ids()   # yet to come in library
-        self.logger.info("SubscriptionManager.getGnbList:: Processed request: {}".format(json.dumps(gnblist)))
+        gnblist = self._rmr_xapp.get_list_gnb_ids()
+        self.logger.info("SubscriptionManager.getGnbList:: Processed request: {}".format(self.nb_list_to_dict(gnblist)))
         return gnblist
 
     def get_enb_list(self):
-        enblist = self._rmr_xapp.get_list_enb_ids()   # yet to come in library
-        self.logger.info("SubscriptionManager.sdlGetGnbList:: Handler processed request: {}".format(json.dumps(enblist)))
+        enblist = self._rmr_xapp.get_list_enb_ids()
+        self.logger.info("SubscriptionManager.sdlGetGnbList:: Handler processed request: {}".format(self.nb_list_to_dict(enblist)))
         return enblist
 
     def send_subscription_request(self,xnb_id):
-        subscription_request = {"xnb_id": xnb_id, "action_type": Constants.ACTION_TYPE}
+        subscription_request = {"xnb_id": self.nb_to_dict(xnb_id), "action_type": Constants.ACTION_TYPE}
         try:
             json_object = json.dumps(subscription_request,indent=4)
         except TypeError:
