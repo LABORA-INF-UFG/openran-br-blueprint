@@ -89,6 +89,8 @@ class ActiveXapp:
         payload = json.dumps({"msg":"Request", "id":i}).encode()
         if not xapp.rmr_send(payload, Constants.ACT_XAPP_REQ):
             xapp.logger.error("Message could not be sent")
+        else:
+            xapp.logger.debug("Setting on SDL: {}={}".format("active-xapp-send-count", i))
 
     def _receive_RMR_message(self, xapp:Xapp):
         message_it = self._xapp.rmr_get_messages()
@@ -104,16 +106,34 @@ class ActiveXapp:
                 xapp.rmr_free(sbuf)
         except StopIteration:
             pass
+    
+    def _generate_managers(self, xapp: Xapp):
+        """
+        Function that creates all the managers for the xApp
+        """
+        xapp.logger.info("Generating managers")
+        self._subscription_manager = SubscriptionManager(xapp)
 
     def _entrypoint (self, xapp: Xapp):
         """
         Function that runs in loop from the xApp start until its end
         """
+        self._generate_managers(xapp)
+        self._subscription_manager.get_gnb_list()
+
         xapp.logger.info("Running loop")
         i = 0
         while not self.shutdown:
+            xapp.logger.debug("Getting gNB SDL information: {}".format(xapp.sdl.find_and_get(ns="ricplt", prefix="GNB")))
+            
+            count = xapp.sdl.find_and_get(ns="ricplt", prefix="reactive-xapp-ack-count")
+            if count is not None:
+                xapp.logger.debug("Get count from SDL: {}".format(count))
+            else:
+                xapp.logger.debug("SDL has no value for key: {}".format("reactive-xapp-ack-count"))
             self._send_active_xapp_req(xapp, i)
             i+=1
+            xapp.sdl.set(ns="ricplt", key="active-xapp-send-count", value=str(i))
             sleep(1)
             self._receive_RMR_message(xapp)
         xapp.logger.info("Ended loop")

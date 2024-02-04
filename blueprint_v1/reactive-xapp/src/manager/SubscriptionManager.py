@@ -43,8 +43,6 @@ class SubscriptionManager(_BaseManager):
             },
             'connection_status': nb_id.connection_status,
         }
-        #return nb_id.__str__()
-        #return "{}_{}_{}".format(nb_id.global_nb_id.plmn_id, nb_id.global_nb_id.nb_id, nb_id.connection_status)
 
     def nb_list_to_dict(self, nb_id_list):
         return [self.nb_to_dict(nb_id) for nb_id in nb_id_list]
@@ -64,21 +62,23 @@ class SubscriptionManager(_BaseManager):
         try:
             json_object = json.dumps(subscription_request,indent=4)
         except TypeError:
-            print("Unable to serialize the object")
+            self.logger.error("SubscriptionManager.send_subscription_request:: Unable to serialize the object")
         url = Constants.SUBSCRIPTION_PATH.format(Constants.PLT_NAMESPACE,
                                                  Constants.SUBSCRIPTION_SERVICE,
                                                  Constants.SUBSCRIPTION_PORT)
         try:
+            self.logger.info("SubscriptionManager.send_subscription_request:: Sending Node B subscription request: {}".format(subscription_request))
             response = requests.post(url , json=json_object)
+            self.logger.info("SubscriptionManager.send_subscription_request:: Received response from Node B subscription request: {}".format(response))
             response.raise_for_status()
         except requests.exceptions.HTTPError as err_h:
-            return "An Http Error occurred:" + repr(err_h)
+            self.logger.error("SubscriptionManager.send_subscription_request:: An Http Error occurred:" + repr(err_h))
         except requests.exceptions.ConnectionError as err_c:
-            return "An Error Connecting to the API occurred:" + repr(err_c)
+            self.logger.error("SubscriptionManager.send_subscription_request:: An Error Connecting to the API occurred:" + repr(err_c))
         except requests.exceptions.Timeout as err_t:
-            return "A Timeout Error occurred:" + repr(err_t)
+            self.logger.error("SubscriptionManager.send_subscription_request:: A Timeout Error occurred:" + repr(err_t))
         except requests.exceptions.RequestException as err:
-            return "An Unknown Error occurred" + repr(err)
+            self.logger.error("SubscriptionManager.send_subscription_request:: An Unknown Error occurred" + repr(err))
 
 
 

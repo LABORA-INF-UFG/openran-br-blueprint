@@ -37,7 +37,7 @@ class ReactiveXapp:
                                  config_handler=self._handle_config_change,
                                  rmr_port=4560,
                                  post_init=self._post_init,
-                                 use_fake_sdl=bool(fake_sdl))
+                                 use_fake_sdl=False) #use_fake_sdl=bool(fake_sdl))
         
         # Registering callback for active xApp messages
         self._rmr_xapp.register_callback(
@@ -89,8 +89,8 @@ class ReactiveXapp:
         gnb_list = sub_mgr.get_gnb_list() # Getting gNodeBs
         rmr_xapp.logger.info("Number of gNBs: {}".format(len(gnb_list)))
         for gnb in gnb_list:
-            sub_mgr.send_subscription_request(gnb)
-
+            sub_mgr.send_subscription_request(gnb) # TODO: NOT WORKING BECAUSE SUBMGR SERVICE DOES NOT HAVE AN IP
+    
         # Metric Manager (I don't remember it on the RIC architecture)
         metric_mgr = MetricManager(rmr_xapp)
         metric_mgr.send_metric()
@@ -108,7 +108,14 @@ class ReactiveXapp:
         """
         rcv_payload = json.loads(summary[rmr.RMR_MS_PAYLOAD])
         rmr_xapp.logger.debug("Received payload = {}".format(rcv_payload))
-        
+        count = rmr_xapp.sdl_find_and_get(namespace="ricplt", prefix="reactive-xapp-ack-count") # Returns {key: value}
+        if count is not None:
+            rmr_xapp.logger.debug("Get count from SDL: {}".format(count))
+        else:
+            rmr_xapp.logger.debug("SDL has no value for key: {}".format("reactive-xapp-ack-count"))
+        count = rcv_payload["id"]
+        rmr_xapp.logger.debug("Setting on SDL: {}={}".format("reactive-xapp-ack-count", count))
+        rmr_xapp.sdl_set(namespace="ricplt", key="reactive-xapp-ack-count", value=str(count))
         rmr_xapp.logger.info("Replying ACK {} to active xApp {}".format(rcv_payload["id"], rcv_payload["msg"]))
         payload = json.dumps({"msg":"ACK", "id":rcv_payload["id"]}).encode()
         if not rmr_xapp.rmr_rts(sbuf, new_payload=payload, new_mtype=Constants.REACT_XAPP_ACK):
