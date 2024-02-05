@@ -29,7 +29,7 @@ from mdclogpy import Level
 
 import json
 
-class ReactiveXapp:
+class KpmXapp:
 
     def __init__(self):
         fake_sdl = getenv("USE_FAKE_SDL", False)
@@ -108,14 +108,14 @@ class ReactiveXapp:
         """
         rcv_payload = json.loads(summary[rmr.RMR_MS_PAYLOAD])
         rmr_xapp.logger.debug("Received payload = {}".format(rcv_payload))
-        count = rmr_xapp.sdl_find_and_get(namespace="ricplt", prefix="reactive-xapp-ack-count") # Returns {key: value}
+        count = rmr_xapp.sdl_find_and_get(namespace="ricplt", prefix="kpm-xapp-ack-count") # Returns {key: value}
         if count is not None:
             rmr_xapp.logger.debug("Get count from SDL: {}".format(count))
         else:
-            rmr_xapp.logger.debug("SDL has no value for key: {}".format("reactive-xapp-ack-count"))
+            rmr_xapp.logger.debug("SDL has no value for key: {}".format("kpm-xapp-ack-count"))
         count = rcv_payload["id"]
-        rmr_xapp.logger.debug("Setting on SDL: {}={}".format("reactive-xapp-ack-count", count))
-        rmr_xapp.sdl_set(namespace="ricplt", key="reactive-xapp-ack-count", value=str(count))
+        rmr_xapp.logger.debug("Setting on SDL: {}={}".format("kpm-xapp-ack-count", count))
+        rmr_xapp.sdl_set(namespace="ricplt", key="kpm-xapp-ack-count", value=str(count))
         rmr_xapp.logger.info("Replying ACK {} to active xApp {}".format(rcv_payload["id"], rcv_payload["msg"]))
         payload = json.dumps({"msg":"ACK", "id":rcv_payload["id"]}).encode()
         if not rmr_xapp.rmr_rts(sbuf, new_payload=payload, new_mtype=Constants.REACT_XAPP_ACK):

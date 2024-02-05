@@ -1,12 +1,12 @@
 {
-    "name": "reactivexapp",
+    "name": "kpmxapp",
     "version": "1.0.0",
     "containers": [
         {
-            "name": "reactivexapp",
+            "name": "kpmxapp",
             "image": {
                 "registry": "127.0.0.1:5001",
-                "name": "reactivexapp",
+                "name": "kpmxapp",
                 "tag": "1.0.0"
             }
         }
@@ -15,19 +15,19 @@
         "ports": [
             {
                 "name": "http",
-                "container": "reactivexapp",
+                "container": "kpmxapp",
                 "port": 8080,
                 "description": "http service"
             },
             {
                 "name": "rmrroute",
-                "container": "reactivexapp",
+                "container": "kpmxapp",
                 "port": 4561,
-                "description": "rmr route port for reactivexapp xapp"
+                "description": "rmr route port for kpmxapp xapp"
             },
             {
                 "name": "rmrdata",
-                "container": "reactivexapp",
+                "container": "kpmxapp",
                 "port": 4560,
                 "rxMessages": ["RIC_SUB_RESP", "RIC_SUB_FAILURE", "RIC_SUB_DEL_RESP", "RIC_INDICATION", "ACT_XAPP_REQ"],
                 "txMessages": ["RIC_SUB_REQ", "RIC_SUB_DEL_REQ", "RIC_SGNB_ADDITION_REQ", "RIC_SGNB_ADDITION_ACK", "REACT_XAPP_ACK"],
@@ -36,7 +36,7 @@
                         {"name":"REACT_XAPP_ACK","id":30001}
                 ],
                 "policies": [1],
-                "description": "rmr data port for reactivexapp"
+                "description": "rmr data port for kpmxapp"
             }
         ]
     },

@@ -1,6 +1,4 @@
 newrt|start
 rte|20011|service-ricplt-a1mediator-rmr.ricplt:4562
 rte|20012|service-ricplt-a1mediator-rmr.ricplt:4562
-rte|30000|service-ricxapp-activexapp-rmr.ricxapp:4560
-rte|30001|service-ricxapp-activexapp-rmr.ricxapp:4560
 newrt|end

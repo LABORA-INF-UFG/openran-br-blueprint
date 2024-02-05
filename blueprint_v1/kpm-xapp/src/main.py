@@ -16,26 +16,13 @@
 #
 # ==================================================================================
 
-from ricxappframe.xapp_frame import Xapp
-from abc import ABC, abstractmethod
+from .kpmxapp import KpmXapp
 
 
-class _BaseHandler(ABC):
-    """
-    Represents base Abstract Handler class
-    Here initialize variables which will be common to all xapp
+def launchXapp():
+    reactivexapp = KpmXapp()
+    reactivexapp.start()
 
-    Parameters:
-        xapp: Reference to original xappframe object
-        msgtype: Integer specifying messagetype
-    """
 
-    def __init__(self, xapp: Xapp, msgtype):
-        self._xapp = xapp
-        self.logger = self._xapp.logger
-        self.msgtype = msgtype
-        #self._xapp.register_callback(self.request_handler, msgtype)
-
-    @abstractmethod
-    def request_handler(self, xapp, summary, sbuf):
-        pass
+if __name__ == "__main__":
+    launchXapp()
