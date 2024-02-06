@@ -64,8 +64,8 @@ class ReactiveXapp:
         #rmr_xapp.logger.debug("Level DEBUG")
 
         # Shared Data Layer (SDL)
-        sdl_mgr = SdlManager(rmr_xapp)
-        sdl_mgr.sdlGetGnbList()
+        # sdl_mgr = SdlManager(rmr_xapp)
+        # sdl_mgr.sdlGetGnbList()
 
         # SDL Alarm Manager (doesn't work because environmental variables are missing)
         # Missing env vars: ALARM_MGR_SERVICE_NAME, ALARM_MGR_SERVICE_PORT
@@ -78,21 +78,21 @@ class ReactiveXapp:
         a1_mgr.startup()
 
         # Subscription Manager
-        sub_mgr = SubscriptionManager(rmr_xapp)
+        # sub_mgr = SubscriptionManager(rmr_xapp)
 
-        enb_list = sub_mgr.get_enb_list() # Getting eNodeBs
-        rmr_xapp.logger.info("Number of eNBs: {}".format(len(enb_list)))
-        for enb in enb_list:
-            sub_mgr.send_subscription_request(enb)
+        # enb_list = sub_mgr.get_enb_list() # Getting eNodeBs
+        # rmr_xapp.logger.info("Number of eNBs: {}".format(len(enb_list)))
+        # for enb in enb_list:
+        #     sub_mgr.send_subscription_request(enb)
 
-        gnb_list = sub_mgr.get_gnb_list() # Getting gNodeBs
-        rmr_xapp.logger.info("Number of gNBs: {}".format(len(gnb_list)))
-        for gnb in gnb_list:
-            sub_mgr.send_subscription_request(gnb)
+        # gnb_list = sub_mgr.get_gnb_list() # Getting gNodeBs
+        # rmr_xapp.logger.info("Number of gNBs: {}".format(len(gnb_list)))
+        # for gnb in gnb_list:
+        #     sub_mgr.send_subscription_request(gnb)
 
         # Metric Manager (I don't remember it on the RIC architecture)
-        metric_mgr = MetricManager(rmr_xapp)
-        metric_mgr.send_metric()
+        # metric_mgr = MetricManager(rmr_xapp)
+        # metric_mgr.send_metric()
 
     def _handle_config_change(self, rmr_xapp, config):
         """
