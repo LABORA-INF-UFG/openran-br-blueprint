@@ -35,7 +35,7 @@ class SubscriptionManager(_BaseManager):
         super().__init__(rmr_xapp)
 
     def nb_to_dict(self, nb_id):
-        return {
+        nb_id_json = {
             'inventory_name': nb_id.inventory_name.decode('utf-8') if isinstance(nb_id.inventory_name, bytes) else nb_id.inventory_name,
             'global_nb_id': {
                 'plmn_id': nb_id.global_nb_id.plmn_id.decode('utf-8') if isinstance(nb_id.global_nb_id.plmn_id, bytes) else nb_id.global_nb_id.plmn_id,
@@ -43,29 +43,65 @@ class SubscriptionManager(_BaseManager):
             },
             'connection_status': nb_id.connection_status,
         }
+        self.logger.info("SubscriptionManager.nb_to_dict:: Processed request: {}".format(nb_id_json))
+        return nb_id_json
 
     def nb_list_to_dict(self, nb_id_list):
-        return [self.nb_to_dict(nb_id) for nb_id in nb_id_list]
+        nb_id_dict_list = [self.nb_to_dict(nb_id) for nb_id in nb_id_list]
+        self.logger.info("SubscriptionManager.nb_list_to_dict:: Processed request: {}".format(nb_id_dict_list))
+        return nb_id_dict_list
 
     def get_gnb_list(self):
-        gnblist = self._rmr_xapp.get_list_gnb_ids()
-        self.logger.info("SubscriptionManager.getGnbList:: Processed request: {}".format(self.nb_list_to_dict(gnblist)))
+        gnblist = self.nb_list_to_dict(self._rmr_xapp.get_list_gnb_ids())
+        self.logger.info("SubscriptionManager.getGnbList:: Processed request: {}".format(gnblist))
         return gnblist
 
     def get_enb_list(self):
-        enblist = self._rmr_xapp.get_list_enb_ids()
+        enblist = self.nb_list_to_dict(self._rmr_xapp.get_list_enb_ids())
         self.logger.info("SubscriptionManager.sdlGetGnbList:: Handler processed request: {}".format(self.nb_list_to_dict(enblist)))
         return enblist
 
     def send_subscription_request(self,xnb_id):
-        subscription_request = {"xnb_id": self.nb_to_dict(xnb_id), "action_type": Constants.ACTION_TYPE}
+        self.logger.info("SubscriptionManager.send_subscription_request:: Sending subscription request to {}".format(xnb_id))
+        # subscription_request = {"xnb_id": self.nb_to_dict(xnb_id), "action_type": Constants.ACTION_TYPE}
+        subscription_request = {
+            "SubscriptionId":"",
+            "ClientEndpoint": {
+                "Host":"service-ricxapp-bouncer-xapp-http.ricxapp",
+                "HTTPPort":8080,
+                "RMRPort":4560
+            },
+            "Meid":xnb_id,
+            "RANFunctionID":1,
+            "SubscriptionDetails":[
+                {
+                    "XappEventInstanceId":12345,
+                    "EventTriggers":[8,39,15],
+                    "ActionToBeSetupList":[
+                        {
+                            "ActionID": 1,
+                            "ActionType": "report",
+                            "ActionDefinition": [0],
+                            "SubsequentAction":{
+                                "SubsequentActionType":"continue",
+                                "TimeToWait":"zero"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+        
         try:
             json_object = json.dumps(subscription_request,indent=4)
         except TypeError:
             self.logger.error("SubscriptionManager.send_subscription_request:: Unable to serialize the object")
-        url = Constants.SUBSCRIPTION_PATH.format(Constants.PLT_NAMESPACE,
-                                                 Constants.SUBSCRIPTION_SERVICE,
-                                                 Constants.SUBSCRIPTION_PORT)
+        # url = Constants.SUBSCRIPTION_PATH.format(Constants.PLT_NAMESPACE,
+        #                                          Constants.SUBSCRIPTION_SERVICE,
+        #                                          Constants.SUBSCRIPTION_PORT)
+        # url = "http://service-ricplt-submgr-http:3800" # Original
+        url = "http://service-ricplt-submgr-http.ricplt.svc.cluster.local:8088/ric/v1/subscriptions" # RIC-O
+        # url = "http://service-ricplt-submgr-http.ricplt.svc.cluster.local:3800" # Modified
         try:
             self.logger.info("SubscriptionManager.send_subscription_request:: Sending Node B subscription request: {}".format(subscription_request))
             response = requests.post(url , json=json_object)
@@ -73,7 +109,7 @@ class SubscriptionManager(_BaseManager):
             response.raise_for_status()
         except requests.exceptions.HTTPError as err_h:
             self.logger.error("SubscriptionManager.send_subscription_request:: An Http Error occurred:" + repr(err_h))
-        except requests.exceptions.ConnectionError as err_c:
+        except requests.exceptions.ConnectionError as err_c: # TODO: solve 400 bad request
             self.logger.error("SubscriptionManager.send_subscription_request:: An Error Connecting to the API occurred:" + repr(err_c))
         except requests.exceptions.Timeout as err_t:
             self.logger.error("SubscriptionManager.send_subscription_request:: A Timeout Error occurred:" + repr(err_t))

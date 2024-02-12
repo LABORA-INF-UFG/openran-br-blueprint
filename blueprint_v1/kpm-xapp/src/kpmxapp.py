@@ -88,8 +88,10 @@ class KpmXapp:
 
         gnb_list = sub_mgr.get_gnb_list() # Getting gNodeBs
         rmr_xapp.logger.info("Number of gNBs: {}".format(len(gnb_list)))
-        # for gnb in gnb_list:
-        #     sub_mgr.send_subscription_request(gnb) # TODO: NOT WORKING BECAUSE SUBMGR SERVICE DOES NOT HAVE AN IP
+        #rmr_xapp.logger.info("Received gNBs: {}".format(gnb_list))
+        for gnb in gnb_list:
+            #rmr_xapp.logger.info("Sending subscription request to gNB: {}".format(gnb))
+            sub_mgr.send_subscription_request(gnb) # TODO: NOT WORKING BECAUSE SUBMGR SERVICE DOES NOT HAVE AN IP
     
         # Metric Manager (I don't remember it on the RIC architecture)
         metric_mgr = MetricManager(rmr_xapp)
