@@ -61,22 +61,27 @@ class SubscriptionManager(_BaseManager):
         self.logger.info("SubscriptionManager.sdlGetGnbList:: Handler processed request: {}".format(self.nb_list_to_dict(enblist)))
         return enblist
 
-    def send_subscription_request(self,xnb_id):
-        self.logger.info("SubscriptionManager.send_subscription_request:: Sending subscription request to {}".format(xnb_id))
+    def send_subscription_request(self, xnb_inventory_name, subscription_transaction_id):
+        self.logger.info("SubscriptionManager.send_subscription_request:: Sending subscription request to {}".format(xnb_inventory_name))
         # subscription_request = {"xnb_id": self.nb_to_dict(xnb_id), "action_type": Constants.ACTION_TYPE}
         subscription_request = {
             "SubscriptionId":"",
             "ClientEndpoint": {
-                "Host":"service-ricxapp-bouncer-xapp-http.ricxapp",
+                "Host":"service-ricxapp-kpmxapp-http.ricxapp",
                 "HTTPPort":8080,
                 "RMRPort":4560
             },
-            "Meid":xnb_id,
-            "RANFunctionID":1,
-            "SubscriptionDetails":[
+            "Meid":xnb_inventory_name, # nobe B inventory_name
+            "RANFunctionID":0, # Check in the E2 SIM
+            # "E2SubscriptionDirectives":{ # Optional, using default sub mgr values
+            #     "E2TimeoutTimerValue":2,
+            #     "E2RetryCount":2,
+            #     "RMRRoutingNeeded":True
+            # },
+            "SubscriptionDetails":[ # Can make multiple subscriptions
                 {
-                    "XappEventInstanceId":12345,
-                    "EventTriggers":[8,39,15],
+                    "XappEventInstanceId":subscription_transaction_id, # "Transaction id"
+                    "EventTriggers":[0],
                     "ActionToBeSetupList":[
                         {
                             "ActionID": 1,
@@ -102,6 +107,7 @@ class SubscriptionManager(_BaseManager):
         # url = "http://service-ricplt-submgr-http:3800" # Original
         url = "http://service-ricplt-submgr-http.ricplt.svc.cluster.local:8088/ric/v1/subscriptions" # RIC-O
         # url = "http://service-ricplt-submgr-http.ricplt.svc.cluster.local:3800" # Modified
+        # url = "http://service-ricplt-submgr-http.ricplt.svc.cluster.local:3800/ric/v1/subscriptions" # Modified 2
         try:
             self.logger.info("SubscriptionManager.send_subscription_request:: Sending Node B subscription request: {}".format(subscription_request))
             response = requests.post(url , json=json_object)
