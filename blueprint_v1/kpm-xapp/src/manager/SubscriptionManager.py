@@ -106,11 +106,9 @@ class SubscriptionManager(_BaseManager):
         #                                          Constants.SUBSCRIPTION_PORT)
         # url = "http://service-ricplt-submgr-http:3800" # Original
         url = "http://service-ricplt-submgr-http.ricplt.svc.cluster.local:8088/ric/v1/subscriptions" # RIC-O
-        # url = "http://service-ricplt-submgr-http.ricplt.svc.cluster.local:3800" # Modified
-        # url = "http://service-ricplt-submgr-http.ricplt.svc.cluster.local:3800/ric/v1/subscriptions" # Modified 2
         try:
-            self.logger.info("SubscriptionManager.send_subscription_request:: Sending Node B subscription request: {}".format(subscription_request))
-            response = requests.post(url , json=json_object)
+            self.logger.info("SubscriptionManager.send_subscription_request:: Sending Node B subscription request to {}: {}".format(url, subscription_request))
+            response = requests.post(url, json=subscription_request) #data=subscription_request) #json=json_object)
             self.logger.info("SubscriptionManager.send_subscription_request:: Received response from Node B subscription request: {}".format(response))
             response.raise_for_status()
         except requests.exceptions.HTTPError as err_h:
