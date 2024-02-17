@@ -1,12 +1,12 @@
 {
-    "name": "kpmxapp",
+    "name": "bouncerxapp",
     "version": "1.0.0",
     "containers": [
         {
-            "name": "kpmxapp",
+            "name": "bouncerxapp",
             "image": {
                 "registry": "127.0.0.1:5001",
-                "name": "kpmxapp",
+                "name": "bouncerxapp",
                 "tag": "1.0.0"
             }
         }
@@ -15,28 +15,24 @@
         "ports": [
             {
                 "name": "http",
-                "container": "kpmxapp",
+                "container": "bouncerxapp",
                 "port": 8080,
                 "description": "http service"
             },
             {
                 "name": "rmrroute",
-                "container": "kpmxapp",
+                "container": "bouncerxapp",
                 "port": 4561,
-                "description": "rmr route port for kpmxapp xapp"
+                "description": "rmr route port for bouncer xapp"
             },
             {
                 "name": "rmrdata",
-                "container": "kpmxapp",
+                "container": "bouncerxapp",
                 "port": 4560,
-                "rxMessages": ["RIC_SUB_RESP", "RIC_SUB_FAILURE", "RIC_SUB_DEL_RESP", "RIC_INDICATION", "ACT_XAPP_REQ"],
-                "txMessages": ["RIC_SUB_REQ", "RIC_SUB_DEL_REQ", "RIC_SGNB_ADDITION_REQ", "RIC_SGNB_ADDITION_ACK", "REACT_XAPP_ACK"],
-                "mtypes" : [
-                        {"name":"ACT_XAPP_REQ","id":30000},
-                        {"name":"REACT_XAPP_ACK","id":30001}
-                ],
+                "rxMessages": ["RIC_SUB_RESP", "RIC_INDICATION","RIC_SUB_DEL_RESP"],
+                "txMessages": ["RIC_SUB_REQ","RIC_SUB_DEL_REQ"],
                 "policies": [1],
-                "description": "rmr data port for kpmxapp"
+                "description": "rmr data port for bouncerxapp"
             }
         ]
     },
@@ -45,20 +41,23 @@
         "maxSize": 2072,
         "numWorkers": 1,
         "txMessages": [
-            "RIC_SUB_REQ", "A1_POLICY_RESP", "A1_POLICY_QUERY", "RIC_HEALTH_CHECK_RESP",
-            "REACT_XAPP_ACK"
+            "RIC_SUB_REQ",
+            "RIC_SUB_DEL_REQ"
         ],
         "rxMessages": [
             "RIC_SUB_RESP",
-            "A1_POLICY_REQ", "RIC_HEALTH_CHECK_REQ",
-            "ACT_XAPP_REQ"
+            "RIC_INDICATION",
+            "RIC_SUB_DEL_RESP"
         ],
     "policies": [1]
     },
+    "http":{
+        "protPort": "tcp:8080"
+    },
     "controls": {
-            "fileStrorage": false
+            "fileStorage": false
     },
     "db" : {
-            "waitForSdl": false
+            "waitForSdl": true
     }
 }

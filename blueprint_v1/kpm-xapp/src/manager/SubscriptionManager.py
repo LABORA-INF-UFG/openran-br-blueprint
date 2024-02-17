@@ -67,7 +67,7 @@ class SubscriptionManager(_BaseManager):
         subscription_request = {
             "SubscriptionId":"",
             "ClientEndpoint": {
-                "Host":"service-ricxapp-kpmxapp-http.ricxapp",
+                "Host":"service-ricxapp-bouncerxapp-http.ricxapp",
                 "HTTPPort":8080,
                 "RMRPort":4560
             },
@@ -109,11 +109,17 @@ class SubscriptionManager(_BaseManager):
         try:
             self.logger.info("SubscriptionManager.send_subscription_request:: Sending Node B subscription request to {}: {}".format(url, subscription_request))
             response = requests.post(url, json=subscription_request) #data=subscription_request) #json=json_object)
-            self.logger.info("SubscriptionManager.send_subscription_request:: Received response from Node B subscription request: {}".format(response))
+            if response.status_code == 201:
+                data = response.json()
+                self.logger.info("SubscriptionManager.send_subscription_request:: Received OK response from Node B subscription request with data: {}".format(data))
+                sub_id = data["SubscriptionId"]
+                sub_instancies = data["SubscriptionInstances"]
+            else:
+                self.logger.info("SubscriptionManager.send_subscription_request:: Received response from Node B subscription request with code: {}".format(response.status_code))
             response.raise_for_status()
         except requests.exceptions.HTTPError as err_h:
             self.logger.error("SubscriptionManager.send_subscription_request:: An Http Error occurred:" + repr(err_h))
-        except requests.exceptions.ConnectionError as err_c: # TODO: solve 400 bad request
+        except requests.exceptions.ConnectionError as err_c:
             self.logger.error("SubscriptionManager.send_subscription_request:: An Error Connecting to the API occurred:" + repr(err_c))
         except requests.exceptions.Timeout as err_t:
             self.logger.error("SubscriptionManager.send_subscription_request:: A Timeout Error occurred:" + repr(err_t))

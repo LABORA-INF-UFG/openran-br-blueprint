@@ -1,7 +1,7 @@
 #!/bin/bash
 
 namespace="ricxapp"
-xapp_name="kpmxapp"
+xapp_name="bouncerxapp"
 
 echo "namespace=$namespace"
 echo "xapp_name=$xapp_name"

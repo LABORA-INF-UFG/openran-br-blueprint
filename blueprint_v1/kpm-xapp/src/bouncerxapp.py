@@ -29,7 +29,7 @@ from mdclogpy import Level
 
 import json
 
-class KpmXapp:
+class BouncerXapp:
 
     def __init__(self):
         fake_sdl = getenv("USE_FAKE_SDL", False)
@@ -54,37 +54,11 @@ class KpmXapp:
         """
         Function that runs when xapp initialization is complete
         """
-
-        rmr_xapp.logger.info("post_init called")
-        
         rmr_xapp.logger.set_level(Level.DEBUG)
-        #rmr_xapp.logger.info("Level INFO")
-        #rmr_xapp.logger.error("Level ERROR")
-        #rmr_xapp.logger.warning("Level WARNING")
-        #rmr_xapp.logger.debug("Level DEBUG")
-
-        # Shared Data Layer (SDL)
-        sdl_mgr = SdlManager(rmr_xapp)
-        #sdl_mgr.sdlGetGnbList()
-
-        # SDL Alarm Manager (doesn't work because environmental variables are missing)
-        # Missing env vars: ALARM_MGR_SERVICE_NAME, ALARM_MGR_SERVICE_PORT
-        #self.sdl_alarm_mgr = SdlAlarmManager(rmr_xapp)
-        #self.sdl_alarm_mgr.checkSdl()
-
-        # A1 Manager
-        # Non-RT RIC is not running
-        a1_mgr = A1PolicyManager(rmr_xapp)
-        a1_mgr.startup()
+        rmr_xapp.logger.info("post_init called")
 
         # Subscription Manager
         sub_mgr = SubscriptionManager(rmr_xapp)
-
-        # There is no eNodeB simulated by E2 Sim
-        # enb_list = sub_mgr.get_enb_list() # Getting eNodeBs
-        # rmr_xapp.logger.info("Number of eNBs: {}".format(len(enb_list)))
-        # for enb in enb_list:
-        #     sub_mgr.send_subscription_request(enb)
 
         gnb_list = sub_mgr.get_gnb_list() # Getting gNodeBs
         rmr_xapp.logger.info("Number of gNBs: {}".format(len(gnb_list)))
@@ -95,10 +69,6 @@ class KpmXapp:
             rmr_xapp.logger.info("Sending subscription request to gNB: {}".format(gnb["inventory_name"]))
             sub_mgr.send_subscription_request(xnb_inventory_name=gnb["inventory_name"],subscription_transaction_id=id)
             id += 1
-    
-        # Metric Manager (I don't remember it on the RIC architecture)
-        metric_mgr = MetricManager(rmr_xapp)
-        metric_mgr.send_metric()
 
     def _handle_config_change(self, rmr_xapp, config):
         """
@@ -113,14 +83,14 @@ class KpmXapp:
         """
         rcv_payload = json.loads(summary[rmr.RMR_MS_PAYLOAD])
         rmr_xapp.logger.debug("Received payload = {}".format(rcv_payload))
-        count = rmr_xapp.sdl_find_and_get(namespace="ricplt", prefix="kpm-xapp-ack-count") # Returns {key: value}
+        count = rmr_xapp.sdl_find_and_get(namespace="ricplt", prefix="bouncer-xapp-ack-count") # Returns {key: value}
         if count is not None:
             rmr_xapp.logger.debug("Get count from SDL: {}".format(count))
         else:
-            rmr_xapp.logger.debug("SDL has no value for key: {}".format("kpm-xapp-ack-count"))
+            rmr_xapp.logger.debug("SDL has no value for key: {}".format("bouncer-xapp-ack-count"))
         count = rcv_payload["id"]
-        rmr_xapp.logger.debug("Setting on SDL: {}={}".format("kpm-xapp-ack-count", count))
-        rmr_xapp.sdl_set(namespace="ricplt", key="kpm-xapp-ack-count", value=str(count))
+        rmr_xapp.logger.debug("Setting on SDL: {}={}".format("bouncer-xapp-ack-count", count))
+        rmr_xapp.sdl_set(namespace="ricplt", key="bouncer-xapp-ack-count", value=str(count))
         rmr_xapp.logger.info("Replying ACK {} to active xApp {}".format(rcv_payload["id"], rcv_payload["msg"]))
         payload = json.dumps({"msg":"ACK", "id":rcv_payload["id"]}).encode()
         if not rmr_xapp.rmr_rts(sbuf, new_payload=payload, new_mtype=Constants.REACT_XAPP_ACK):
@@ -157,7 +127,6 @@ class KpmXapp:
         for "real" (no thread, real SDL), but also easily modified for unit testing
         (e.g., use_fake_sdl). The defaults for this function are for the Dockerized xapp.
         """
-        #self.createHandlers()
         self._rmr_xapp.run(thread, rmr_timeout=5) # Wait 5 second for RMR messages
 
     def stop(self):

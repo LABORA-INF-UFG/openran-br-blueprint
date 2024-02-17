@@ -16,12 +16,12 @@
 #
 # ==================================================================================
 
-from .kpmxapp import KpmXapp
+from .bouncerxapp import BouncerXapp
 
 
 def launchXapp():
-    reactivexapp = KpmXapp()
-    reactivexapp.start()
+    bouncerxapp = BouncerXapp()
+    bouncerxapp.start()
 
 
 if __name__ == "__main__":
