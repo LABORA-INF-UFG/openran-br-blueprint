@@ -57,15 +57,16 @@ class BouncerXapp:
         rmr_xapp.logger.set_level(Level.DEBUG)
         rmr_xapp.logger.info("post_init called")
 
-        # Subscription Manager
+        # Setting up HTTP server
+        rest_mgr = RestManager(rmr_xapp)
+        rest_mgr.start_http_server(8080)
+        
+        # Sending subscription requests for gNBs through SubscriptionManager
         sub_mgr = SubscriptionManager(rmr_xapp)
-
-        gnb_list = sub_mgr.get_gnb_list() # Getting gNodeBs
+        gnb_list = sub_mgr.get_gnb_list() # Getting gNBs
         rmr_xapp.logger.info("Number of gNBs: {}".format(len(gnb_list)))
-        #rmr_xapp.logger.info("Received gNBs: {}".format(gnb_list))
         id = 12345
         for gnb in gnb_list:
-            #rmr_xapp.logger.info("Sending subscription request to gNB: {}".format(gnb))
             rmr_xapp.logger.info("Sending subscription request to gNB: {}".format(gnb["inventory_name"]))
             sub_mgr.send_subscription_request(xnb_inventory_name=gnb["inventory_name"],subscription_transaction_id=id)
             id += 1
@@ -132,6 +133,5 @@ class BouncerXapp:
     def stop(self):
         """
         can only be called if thread=True when started
-        TODO: could we register a signal handler for Docker SIGTERM that calls this?
         """
         self._rmr_xapp.stop()

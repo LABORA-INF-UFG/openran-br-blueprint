@@ -33,6 +33,7 @@ class SubscriptionManager(_BaseManager):
 
     def __init__(self, rmr_xapp: RMRXapp):
         super().__init__(rmr_xapp)
+        self.subscriptions = {}
 
     def nb_to_dict(self, nb_id):
         nb_id_json = {
@@ -43,12 +44,12 @@ class SubscriptionManager(_BaseManager):
             },
             'connection_status': nb_id.connection_status,
         }
-        self.logger.info("SubscriptionManager.nb_to_dict:: Processed request: {}".format(nb_id_json))
+        self.logger.debug("SubscriptionManager.nb_to_dict:: Processed request: {}".format(nb_id_json))
         return nb_id_json
 
     def nb_list_to_dict(self, nb_id_list):
         nb_id_dict_list = [self.nb_to_dict(nb_id) for nb_id in nb_id_list]
-        self.logger.info("SubscriptionManager.nb_list_to_dict:: Processed request: {}".format(nb_id_dict_list))
+        self.logger.debug("SubscriptionManager.nb_list_to_dict:: Processed request: {}".format(nb_id_dict_list))
         return nb_id_dict_list
 
     def get_gnb_list(self):
@@ -61,10 +62,8 @@ class SubscriptionManager(_BaseManager):
         self.logger.info("SubscriptionManager.sdlGetGnbList:: Handler processed request: {}".format(self.nb_list_to_dict(enblist)))
         return enblist
 
-    def send_subscription_request(self, xnb_inventory_name, subscription_transaction_id):
-        self.logger.info("SubscriptionManager.send_subscription_request:: Sending subscription request to {}".format(xnb_inventory_name))
-        # subscription_request = {"xnb_id": self.nb_to_dict(xnb_id), "action_type": Constants.ACTION_TYPE}
-        subscription_request = {
+    def generate_subscription_request(self, xnb_inventory_name, subscription_transaction_id):
+        return {
             "SubscriptionId":"",
             "ClientEndpoint": {
                 "Host":"service-ricxapp-bouncerxapp-http.ricxapp",
@@ -73,11 +72,11 @@ class SubscriptionManager(_BaseManager):
             },
             "Meid":xnb_inventory_name, # nobe B inventory_name
             "RANFunctionID":0, # Check in the E2 SIM
-            # "E2SubscriptionDirectives":{ # Optional, using default sub mgr values
-            #     "E2TimeoutTimerValue":2,
-            #     "E2RetryCount":2,
-            #     "RMRRoutingNeeded":True
-            # },
+            "E2SubscriptionDirectives":{ # Optional
+                "E2TimeoutTimerValue":2, # Default
+                "E2RetryCount":2, # Default
+                "RMRRoutingNeeded":True # Default
+            },
             "SubscriptionDetails":[ # Can make multiple subscriptions
                 {
                     "XappEventInstanceId":subscription_transaction_id, # "Transaction id"
@@ -96,7 +95,10 @@ class SubscriptionManager(_BaseManager):
                 }
             ]
         }
-        
+
+    def send_subscription_request(self, xnb_inventory_name, subscription_transaction_id):
+        self.logger.info("SubscriptionManager.send_subscription_request:: Sending subscription request to {}".format(xnb_inventory_name))
+        subscription_request = self.generate_subscription_request(xnb_inventory_name, subscription_transaction_id)
         try:
             json_object = json.dumps(subscription_request,indent=4)
         except TypeError:
@@ -109,13 +111,13 @@ class SubscriptionManager(_BaseManager):
         try:
             self.logger.info("SubscriptionManager.send_subscription_request:: Sending Node B subscription request to {}: {}".format(url, subscription_request))
             response = requests.post(url, json=subscription_request) #data=subscription_request) #json=json_object)
+            data = response.json()
             if response.status_code == 201:
-                data = response.json()
                 self.logger.info("SubscriptionManager.send_subscription_request:: Received OK response from Node B subscription request with data: {}".format(data))
                 sub_id = data["SubscriptionId"]
-                sub_instancies = data["SubscriptionInstances"]
+                self.subscriptions[xnb_inventory_name] = {"inventory_name": xnb_inventory_name, "SubscriptionId": sub_id}
             else:
-                self.logger.info("SubscriptionManager.send_subscription_request:: Received response from Node B subscription request with code: {}".format(response.status_code))
+                self.logger.info("SubscriptionManager.send_subscription_request:: Received response from Node B subscription request with code: {} and data: {}".format(response.status_code, data))
             response.raise_for_status()
         except requests.exceptions.HTTPError as err_h:
             self.logger.error("SubscriptionManager.send_subscription_request:: An Http Error occurred:" + repr(err_h))
