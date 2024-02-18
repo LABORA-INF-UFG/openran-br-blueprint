@@ -57,17 +57,17 @@ class BouncerXapp:
         rmr_xapp.logger.set_level(Level.DEBUG)
         rmr_xapp.logger.info("post_init called")
 
-        # Setting up HTTP server
-        self.rest_mgr = RestManager(rmr_xapp)
+    def setup_http_servers(self):
+        self.rest_mgr = RestManager(self._rmr_xapp)
         self.rest_mgr.start_http_server(8080)
-        
-        # Sending subscription requests for gNBs through SubscriptionManager
-        self.sub_mgr = SubscriptionManager(rmr_xapp)
+    
+    def subscribe_to_gNBs(self):
+        self.sub_mgr = SubscriptionManager(self._rmr_xapp)
         gnb_list = self.sub_mgr.get_gnb_list() # Getting gNBs
-        rmr_xapp.logger.info("Number of gNBs: {}".format(len(gnb_list)))
+        self._rmr_xapp.logger.info("Number of gNBs: {}".format(len(gnb_list)))
         id = 54321
         for gnb in gnb_list:
-            rmr_xapp.logger.info("Sending subscription request to gNB: {}".format(gnb["inventory_name"]))
+            self._rmr_xapp.logger.info("Sending subscription request to gNB: {}".format(gnb["inventory_name"]))
             self.sub_mgr.send_subscription_request(xnb_inventory_name=gnb["inventory_name"],subscription_transaction_id=id)
             id += 1
 
@@ -128,7 +128,9 @@ class BouncerXapp:
         for "real" (no thread, real SDL), but also easily modified for unit testing
         (e.g., use_fake_sdl). The defaults for this function are for the Dockerized xapp.
         """
-        self._rmr_xapp.run(thread, rmr_timeout=5) # Wait 5 second for RMR messages
+        self.setup_http_servers()
+        self._rmr_xapp.run(thread=True, rmr_timeout=5) # Wait 5 second for RMR messages
+        self.subscribe_to_gNBs() # Sending subscription requests for gNBs through SubscriptionManager
 
     def stop(self):
         """
