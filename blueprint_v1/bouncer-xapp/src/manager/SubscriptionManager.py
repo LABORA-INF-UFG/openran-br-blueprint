@@ -128,9 +128,25 @@ class SubscriptionManager(_BaseManager):
         except requests.exceptions.RequestException as err:
             self.logger.error("SubscriptionManager.send_subscription_request:: An Unknown Error occurred" + repr(err))
 
+    def send_subscription_delete_request(self, subscription_id):
+        self.logger.info("SubscriptionManager.send_subscription_delete_request:: Sending delete request for subscription {}".format(subscription_id))
+        url = "http://service-ricplt-submgr-http.ricplt.svc.cluster.local:8088/ric/v1/subscriptions/{}".format(subscription_id)
+        try:
+            self.logger.info("SubscriptionManager.send_subscription_delete_request:: Sending delete subscription request to {}".format(url))
+            response = requests.delete(url)
+            self.logger.info("SubscriptionManager.send_subscription_delete_request:: Received response with code: {}".format(response.status_code))
+            response.raise_for_status()
+        except requests.exceptions.HTTPError as err_h:
+            self.logger.error("SubscriptionManager.send_subscription_delete_request:: An Http Error occurred:" + repr(err_h))
+        except requests.exceptions.ConnectionError as err_c:
+            self.logger.error("SubscriptionManager.send_subscription_delete_request:: An Error Connecting to the API occurred:" + repr(err_c))
+        except requests.exceptions.Timeout as err_t:
+            self.logger.error("SubscriptionManager.send_subscription_delete_request:: A Timeout Error occurred:" + repr(err_t))
+        except requests.exceptions.RequestException as err:
+            self.logger.error("SubscriptionManager.send_subscription_delete_request:: An Unknown Error occurred" + repr(err))
 
-
-
-
-
-
+    def delete_subscriptions(self):
+        list_of_subscriptions = list(self.subscriptions.values())
+        for subscription in list_of_subscriptions:
+            self.send_subscription_delete_request(subscription["SubscriptionId"])
+            self.subscriptions.pop(subscription["inventory_name"])

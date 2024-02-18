@@ -9,16 +9,20 @@ from ._BaseManager import _BaseManager
 class RestManager(_BaseManager):
     def __init__(self, rmr_xapp: RMRXapp):
         super().__init__(rmr_xapp)
+        self.servers = []
 
     class DefaultHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
         def __init__(self, *args, logger=None, **kwargs):
             self.logger = logger
             super().__init__(*args, **kwargs)
+        
+        def log_message(self, format, *args): # Overridden to prevent unnecessary logging
+            pass
 
         def do_GET(self):
             headers_dict = dict(self.headers)
             self.logger.info("RestManager.do_GET:: Path: {}, Headers: {}".format(str(self.path), headers_dict))
-            self.send_response(200)
+            self.send_response(200) # Reply OK
 
         def do_POST(self):
             headers_dict = dict(self.headers)
@@ -26,7 +30,7 @@ class RestManager(_BaseManager):
             post_data = self.rfile.read(content_length) # Gets the data itself
             data_dict = json.loads(post_data.decode('utf-8'))
             self.logger.info("RestManager.do_POST:: Path: {}, Headers: {}, Body: {}".format(str(self.path), headers_dict, data_dict))
-            self.send_response(200)
+            self.send_response(200) # Reply OK
 
     class ThreadedHTTPServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
         pass
@@ -42,8 +46,12 @@ class RestManager(_BaseManager):
         httpd = self.ThreadedHTTPServer(server_address, handler_factory)
         
         # Start the server in a new thread
-        server_thread = threading.Thread(target=httpd.serve_forever)
-        server_thread.start()
-
-
-
+        self.server_thread = threading.Thread(target=httpd.serve_forever)
+        self.server_thread.start()
+        self.servers.append(httpd)
+    
+    def stop_servers(self):
+        self.logger.info("RestManager.stop_servers:: Stopping HTTP server")
+        for server in self.servers:
+            server.shutdown()
+            server.server_close()

@@ -58,17 +58,17 @@ class BouncerXapp:
         rmr_xapp.logger.info("post_init called")
 
         # Setting up HTTP server
-        rest_mgr = RestManager(rmr_xapp)
-        rest_mgr.start_http_server(8080)
+        self.rest_mgr = RestManager(rmr_xapp)
+        self.rest_mgr.start_http_server(8080)
         
         # Sending subscription requests for gNBs through SubscriptionManager
-        sub_mgr = SubscriptionManager(rmr_xapp)
-        gnb_list = sub_mgr.get_gnb_list() # Getting gNBs
+        self.sub_mgr = SubscriptionManager(rmr_xapp)
+        gnb_list = self.sub_mgr.get_gnb_list() # Getting gNBs
         rmr_xapp.logger.info("Number of gNBs: {}".format(len(gnb_list)))
-        id = 12345
+        id = 54321
         for gnb in gnb_list:
             rmr_xapp.logger.info("Sending subscription request to gNB: {}".format(gnb["inventory_name"]))
-            sub_mgr.send_subscription_request(xnb_inventory_name=gnb["inventory_name"],subscription_transaction_id=id)
+            self.sub_mgr.send_subscription_request(xnb_inventory_name=gnb["inventory_name"],subscription_transaction_id=id)
             id += 1
 
     def _handle_config_change(self, rmr_xapp, config):
@@ -134,4 +134,6 @@ class BouncerXapp:
         """
         can only be called if thread=True when started
         """
+        self.sub_mgr.delete_subscriptions()
+        self.rest_mgr.stop_servers()
         self._rmr_xapp.stop()
