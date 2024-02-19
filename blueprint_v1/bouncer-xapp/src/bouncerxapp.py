@@ -57,20 +57,6 @@ class BouncerXapp:
         rmr_xapp.logger.set_level(Level.DEBUG)
         rmr_xapp.logger.info("post_init called")
 
-    def setup_http_servers(self):
-        self.rest_mgr = RestManager(self._rmr_xapp)
-        self.rest_mgr.start_http_server(8080)
-    
-    def subscribe_to_gNBs(self):
-        self.sub_mgr = SubscriptionManager(self._rmr_xapp)
-        gnb_list = self.sub_mgr.get_gnb_list() # Getting gNBs
-        self._rmr_xapp.logger.info("Number of gNBs: {}".format(len(gnb_list)))
-        id = 54321
-        for gnb in gnb_list:
-            self._rmr_xapp.logger.info("Sending subscription request to gNB: {}".format(gnb["inventory_name"]))
-            self.sub_mgr.send_subscription_request(xnb_inventory_name=gnb["inventory_name"],subscription_transaction_id=id)
-            id += 1
-
     def _handle_config_change(self, rmr_xapp, config):
         """
         Function that runs at start and on every configuration file change.
@@ -128,9 +114,13 @@ class BouncerXapp:
         for "real" (no thread, real SDL), but also easily modified for unit testing
         (e.g., use_fake_sdl). The defaults for this function are for the Dockerized xapp.
         """
-        self.setup_http_servers()
-        self._rmr_xapp.run(thread=True, rmr_timeout=5) # Wait 5 second for RMR messages
-        self.subscribe_to_gNBs() # Sending subscription requests for gNBs through SubscriptionManager
+        self.appmgr = ApplicationManager(self._rmr_xapp)
+        self.appmgr.register_xapp()
+        self.rest_mgr = RestManager(self._rmr_xapp)
+        self.rest_mgr.start_http_server(8080)
+        self.sub_mgr = SubscriptionManager(self._rmr_xapp)
+        self.sub_mgr.subscribe_to_all_gNBs() # Sending subscription requests for gNBs through SubscriptionManager
+        self._rmr_xapp.run(thread=thread, rmr_timeout=5) # Wait 5 second for RMR messages
 
     def stop(self):
         """
@@ -138,4 +128,5 @@ class BouncerXapp:
         """
         self.sub_mgr.delete_subscriptions()
         self.rest_mgr.stop_servers()
+        self.appmgr.deregister_xapp()
         self._rmr_xapp.stop()

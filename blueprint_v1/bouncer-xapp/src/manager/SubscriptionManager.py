@@ -99,10 +99,10 @@ class SubscriptionManager(_BaseManager):
     def send_subscription_request(self, xnb_inventory_name, subscription_transaction_id):
         self.logger.info("SubscriptionManager.send_subscription_request:: Sending subscription request to {}".format(xnb_inventory_name))
         subscription_request = self.generate_subscription_request(xnb_inventory_name, subscription_transaction_id)
-        try:
-            json_object = json.dumps(subscription_request,indent=4)
-        except TypeError:
-            self.logger.error("SubscriptionManager.send_subscription_request:: Unable to serialize the object")
+        # try:
+        #     json_object = json.dumps(subscription_request,indent=4)
+        # except TypeError:
+        #     self.logger.error("SubscriptionManager.send_subscription_request:: Unable to serialize the object")
         # url = Constants.SUBSCRIPTION_PATH.format(Constants.PLT_NAMESPACE,
         #                                          Constants.SUBSCRIPTION_SERVICE,
         #                                          Constants.SUBSCRIPTION_PORT)
@@ -127,6 +127,15 @@ class SubscriptionManager(_BaseManager):
             self.logger.error("SubscriptionManager.send_subscription_request:: A Timeout Error occurred:" + repr(err_t))
         except requests.exceptions.RequestException as err:
             self.logger.error("SubscriptionManager.send_subscription_request:: An Unknown Error occurred" + repr(err))
+    
+    def subscribe_to_all_gNBs(self):
+        gnb_list = self.get_gnb_list() # Getting gNBs
+        self._rmr_xapp.logger.info("Number of gNBs: {}".format(len(gnb_list)))
+        id = 12345
+        for gnb in gnb_list:
+            self._rmr_xapp.logger.info("Sending subscription request to gNB: {}".format(gnb["inventory_name"]))
+            self.send_subscription_request(xnb_inventory_name=gnb["inventory_name"],subscription_transaction_id=id)
+            id += 1
 
     def send_subscription_delete_request(self, subscription_id):
         self.logger.info("SubscriptionManager.send_subscription_delete_request:: Sending delete request for subscription {}".format(subscription_id))
