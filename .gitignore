@@ -1,2 +1,5 @@
 blueprint_v1/bouncer-rc/
 blueprint_v1/e2sim/
+blueprint_v1/03_receiver/
+blueprint_v1/03_transmitter/
+*.zip

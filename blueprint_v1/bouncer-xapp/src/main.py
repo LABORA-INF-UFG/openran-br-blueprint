@@ -21,7 +21,7 @@ from .bouncerxapp import BouncerXapp
 
 def launchXapp():
     bouncerxapp = BouncerXapp()
-    bouncerxapp.start()
+    bouncerxapp.start(thread=True)
 
 
 if __name__ == "__main__":

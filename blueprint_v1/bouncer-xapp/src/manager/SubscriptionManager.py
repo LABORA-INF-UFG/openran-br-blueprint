@@ -71,24 +71,24 @@ class SubscriptionManager(_BaseManager):
                 "RMRPort":4560
             },
             "Meid":xnb_inventory_name, # nobe B inventory_name
-            "RANFunctionID":0, # Check in the E2 SIM
+            "RANFunctionID":1, # Default = 0
             "E2SubscriptionDirectives":{ # Optional
-                "E2TimeoutTimerValue":2, # Default
-                "E2RetryCount":2, # Default
-                "RMRRoutingNeeded":True # Default
+                "E2TimeoutTimerValue":2, # Default = 2
+                "E2RetryCount":2, # Default = 2
+                "RMRRoutingNeeded":True # Default = True
             },
             "SubscriptionDetails":[ # Can make multiple subscriptions
                 {
                     "XappEventInstanceId":subscription_transaction_id, # "Transaction id"
-                    "EventTriggers":[0],
+                    "EventTriggers":[2], # Default = [0]
                     "ActionToBeSetupList":[
                         {
                             "ActionID": 1,
-                            "ActionType": "report",
-                            "ActionDefinition": [0],
+                            "ActionType": "insert", # Default = "report"
+                            "ActionDefinition": [3], # Default = [0]
                             "SubsequentAction":{
                                 "SubsequentActionType":"continue",
-                                "TimeToWait":"zero"
+                                "TimeToWait":"w10ms" # Default = "zero"
                             }
                         }
                     ]

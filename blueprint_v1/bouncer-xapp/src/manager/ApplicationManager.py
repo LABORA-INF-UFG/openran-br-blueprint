@@ -36,32 +36,32 @@ class ApplicationManager(_BaseManager):
         #         self._config_data = json.load(json_file)
         # if self._config_data is None or not isinstance(self._config_data, dict):
         #     self.logger.error("ApplicationManager.__init__:: Failed to load config data from file: {}".format(self._config_path))
-        self._config_data = self._rmr_xapp._config_data
-        if self._config_data is None:
-            self.logger.error("ApplicationManager.__init__:: Failed to load config data from xApp")
-        else:
-            self.logger.info("ApplicationManager.__init__:: Config data loaded succesfully: {}".format(self._config_data))
+        # self._config_data = self._rmr_xapp._config_data
+        # if self._config_data is None:
+        #     self.logger.error("ApplicationManager.__init__:: Failed to load config data from xApp")
+        # else:
+        #     self.logger.info("ApplicationManager.__init__:: Config data loaded succesfully: {}".format(self._config_data))
 
     def register_xapp(self):
         registration_request = {
-            "appName": "", #os.environ.get("HOSTNAME")
-            "appVersion": "", #self._config_data.get("version")
+            "appName": os.environ.get("HOSTNAME"),
+            "appVersion": self._rmr_xapp.config.get("version"),
             "configPath": "",
-            "appInstanceName": "", #self._config_data.get("name")
-            "httpEndpoint": "service-ricxapp-bouncerxapp-http",
-            "rmrEndpoint": "service-ricxapp-bouncerxapp-rmr",
-            "config": "" #json.dumps(self._config_data)
+            "appInstanceName": self._rmr_xapp.config.get("name"),
+            "httpEndpoint": "service-ricxapp-bouncerxapp-http.ricxapp:8080",
+            "rmrEndpoint": "service-ricxapp-bouncerxapp-rmr.ricxapp:4560",
+            "config": self._rmr_xapp.config #json.dumps(self._rmr_xapp.config)
 		}
         url = "http://service-ricplt-appmgr-http.ricplt.svc.cluster.local:8080/ric/v1/register"
         try:
             self.logger.info("ApplicationManager.register_xapp:: Sending xApp registration request to {}: {}".format(url, registration_request))
-            response = requests.post(url, json=registration_request) #data=subscription_request) #json=json_object)
+            response = requests.post(url, json=registration_request)
             self.logger.info("ApplicationManager.register_xapp:: Received response from AppMgr registration request with code: {}".format(response.status_code))
-            # data = response.json()
-            # if data is None:
-            #     self.logger.error("ApplicationManager.register_xapp:: Received response from AppMgr registration request with code: {} and no data".format(response.status_code))
-            # else:
-            #     self.logger.info("ApplicationManager.register_xapp:: Received response from AppMgr registration request with code: {} and data: {}".format(response.status_code, data))
+            data = response.json()
+            if data is None:
+                self.logger.error("ApplicationManager.register_xapp:: Received response from AppMgr registration request with code: {} and no data".format(response.status_code))
+            else:
+                self.logger.info("ApplicationManager.register_xapp:: Received response from AppMgr registration request with code: {} and data: {}".format(response.status_code, data))
             response.raise_for_status()
         except requests.exceptions.HTTPError as err_h:
             self.logger.error("ApplicationManager.register_xapp:: An Http Error occurred:" + repr(err_h))
@@ -73,4 +73,26 @@ class ApplicationManager(_BaseManager):
             self.logger.error("ApplicationManager.register_xapp:: An Unknown Error occurred" + repr(err))
     
     def deregister_xapp(self):
-        pass
+        deregistration_request = {
+            "appName": os.environ.get("HOSTNAME"),
+            "appInstanceName": self._rmr_xapp.config.get("name"),
+		}
+        url = "http://service-ricplt-appmgr-http.ricplt.svc.cluster.local:8080/ric/v1/deregister"
+        try:
+            self.logger.info("ApplicationManager.register_xapp:: Sending xApp deregistration request to {}: {}".format(url, deregistration_request))
+            response = requests.post(url, json=deregistration_request)
+            self.logger.info("ApplicationManager.register_xapp:: Received response from AppMgr deregistration request with code: {}".format(response.status_code))
+            data = response.json()
+            if data is None:
+                self.logger.error("ApplicationManager.register_xapp:: Received response from AppMgr deregistration request with code: {} and no data".format(response.status_code))
+            else:
+                self.logger.info("ApplicationManager.register_xapp:: Received response from AppMgr deregistration request with code: {} and data: {}".format(response.status_code, data))
+            response.raise_for_status()
+        except requests.exceptions.HTTPError as err_h:
+            self.logger.error("ApplicationManager.register_xapp:: An Http Error occurred:" + repr(err_h))
+        except requests.exceptions.ConnectionError as err_c:
+            self.logger.error("ApplicationManager.register_xapp:: An Error Connecting to the API occurred:" + repr(err_c))
+        except requests.exceptions.Timeout as err_t:
+            self.logger.error("ApplicationManager.register_xapp:: A Timeout Error occurred:" + repr(err_t))
+        except requests.exceptions.RequestException as err:
+            self.logger.error("ApplicationManager.register_xapp:: An Unknown Error occurred" + repr(err))

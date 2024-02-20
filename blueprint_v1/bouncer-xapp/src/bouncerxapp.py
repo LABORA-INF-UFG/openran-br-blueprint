@@ -32,17 +32,13 @@ import json
 class BouncerXapp:
 
     def __init__(self):
+        # Initiating the RMRXapp framework from ricxappframe module
         fake_sdl = getenv("USE_FAKE_SDL", False)
         self._rmr_xapp = RMRXapp(self._default_handler,
                                  config_handler=self._handle_config_change,
                                  rmr_port=4560,
                                  post_init=self._post_init,
                                  use_fake_sdl=False) #use_fake_sdl=bool(fake_sdl))
-        
-        # Registering callback for active xApp messages
-        self._rmr_xapp.register_callback(
-            handler=self._handle_act_xapp_msg, message_type=Constants.ACT_XAPP_REQ
-        )
 
         # Registering handlers for signals
         signal.signal(signal.SIGTERM, self._handle_signal)
@@ -96,8 +92,7 @@ class BouncerXapp:
         """
         Function that processes messages for which no handler is defined
         """
-        rmr_xapp.logger.info("HWXappdefault_handler called for msg type = " +
-                                   str(summary[rmr.RMR_MS_MSG_TYPE]))
+        rmr_xapp.logger.info("HWXappdefault_handler called for msg type = " + str(summary[rmr.RMR_MS_MSG_TYPE]))
         rmr_xapp.rmr_free(sbuf)
 
     def createHandlers(self):
@@ -115,11 +110,15 @@ class BouncerXapp:
         (e.g., use_fake_sdl). The defaults for this function are for the Dockerized xapp.
         """
         self.appmgr = ApplicationManager(self._rmr_xapp)
-        self.appmgr.register_xapp()
         self.rest_mgr = RestManager(self._rmr_xapp)
-        self.rest_mgr.start_http_server(8080)
         self.sub_mgr = SubscriptionManager(self._rmr_xapp)
+
+        self._rmr_xapp.logger.info("start:: calling ApplicationManager to register the xApp")
+        self.appmgr.register_xapp()
+        self._rmr_xapp.logger.info("start:: calling SubscriptionManager to subscribe to gNBs")
         self.sub_mgr.subscribe_to_all_gNBs() # Sending subscription requests for gNBs through SubscriptionManager
+
+        self.rest_mgr.start_http_server(8080)
         self._rmr_xapp.run(thread=thread, rmr_timeout=5) # Wait 5 second for RMR messages
 
     def stop(self):
