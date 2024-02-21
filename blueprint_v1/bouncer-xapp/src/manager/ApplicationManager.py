@@ -46,22 +46,23 @@ class ApplicationManager(_BaseManager):
         registration_request = {
             "appName": os.environ.get("HOSTNAME"),
             "appVersion": self._rmr_xapp.config.get("version"),
-            "configPath": "",
+            "configPath": "/ric/v1/config",
             "appInstanceName": self._rmr_xapp.config.get("name"),
-            "httpEndpoint": "service-ricxapp-bouncerxapp-http.ricxapp:8080",
-            "rmrEndpoint": "service-ricxapp-bouncerxapp-rmr.ricxapp:4560",
-            "config": self._rmr_xapp.config #json.dumps(self._rmr_xapp.config)
+            "httpEndpoint": "service-ricxapp-bouncerxapp-http.ricxapp.svc.cluster.local:8080",
+            "rmrEndpoint": "service-ricxapp-bouncerxapp-rmr.ricxapp.svc.cluster.local:4560",
+            "config": json.dumps(self._rmr_xapp.config) # Yes, the config is serialized twice (appmgr works this way)
 		}
         url = "http://service-ricplt-appmgr-http.ricplt.svc.cluster.local:8080/ric/v1/register"
         try:
             self.logger.info("ApplicationManager.register_xapp:: Sending xApp registration request to {}: {}".format(url, registration_request))
+            #self.logger.debug("ApplicationManager.register_xapp:: Dumped registration request: {}".format(json.dumps(registration_request)))
             response = requests.post(url, json=registration_request)
-            self.logger.info("ApplicationManager.register_xapp:: Received response from AppMgr registration request with code: {}".format(response.status_code))
-            data = response.json()
-            if data is None:
-                self.logger.error("ApplicationManager.register_xapp:: Received response from AppMgr registration request with code: {} and no data".format(response.status_code))
-            else:
-                self.logger.info("ApplicationManager.register_xapp:: Received response from AppMgr registration request with code: {} and data: {}".format(response.status_code, data))
+            self.logger.info("ApplicationManager.register_xapp:: Received response from AppMgr registration request with code: {}".format(response))
+            # data = response.json()
+            # if data is None:
+            #     self.logger.error("ApplicationManager.register_xapp:: Received response from AppMgr registration request with code: {} and no data".format(response.status_code))
+            # else:
+                #self.logger.info("ApplicationManager.register_xapp:: Received response from AppMgr registration request with code: {} and data: {}".format(response.status_code, data))
             response.raise_for_status()
         except requests.exceptions.HTTPError as err_h:
             self.logger.error("ApplicationManager.register_xapp:: An Http Error occurred:" + repr(err_h))
@@ -82,11 +83,6 @@ class ApplicationManager(_BaseManager):
             self.logger.info("ApplicationManager.register_xapp:: Sending xApp deregistration request to {}: {}".format(url, deregistration_request))
             response = requests.post(url, json=deregistration_request)
             self.logger.info("ApplicationManager.register_xapp:: Received response from AppMgr deregistration request with code: {}".format(response.status_code))
-            data = response.json()
-            if data is None:
-                self.logger.error("ApplicationManager.register_xapp:: Received response from AppMgr deregistration request with code: {} and no data".format(response.status_code))
-            else:
-                self.logger.info("ApplicationManager.register_xapp:: Received response from AppMgr deregistration request with code: {} and data: {}".format(response.status_code, data))
             response.raise_for_status()
         except requests.exceptions.HTTPError as err_h:
             self.logger.error("ApplicationManager.register_xapp:: An Http Error occurred:" + repr(err_h))

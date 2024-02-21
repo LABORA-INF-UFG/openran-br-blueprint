@@ -58,7 +58,7 @@ class BouncerXapp:
         Function that runs at start and on every configuration file change.
         """
         rmr_xapp.logger.info("handle_config_change:: config: {}".format(config))
-        rmr_xapp.config = config  # No mutex required due to GIL
+        rmr_xapp.config = dict(config)  # No mutex required due to GIL
 
     def _handle_act_xapp_msg(self, rmr_xapp:RMRXapp, summary, sbuf):
         """
@@ -113,12 +113,14 @@ class BouncerXapp:
         self.rest_mgr = RestManager(self._rmr_xapp)
         self.sub_mgr = SubscriptionManager(self._rmr_xapp)
 
+        self.rest_mgr.start_http_server(8080) # Start the HTTP server to log all received GET and POST messages
+
         self._rmr_xapp.logger.info("start:: calling ApplicationManager to register the xApp")
         self.appmgr.register_xapp()
+
         self._rmr_xapp.logger.info("start:: calling SubscriptionManager to subscribe to gNBs")
         self.sub_mgr.subscribe_to_all_gNBs() # Sending subscription requests for gNBs through SubscriptionManager
 
-        self.rest_mgr.start_http_server(8080)
         self._rmr_xapp.run(thread=thread, rmr_timeout=5) # Wait 5 second for RMR messages
 
     def stop(self):
@@ -126,6 +128,6 @@ class BouncerXapp:
         can only be called if thread=True when started
         """
         self.sub_mgr.delete_subscriptions()
-        self.rest_mgr.stop_servers()
         self.appmgr.deregister_xapp()
+        self.rest_mgr.stop_server()
         self._rmr_xapp.stop()
