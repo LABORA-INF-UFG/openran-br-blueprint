@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+    name: helm-cli
+    namespace: default
+spec:
+    containers:
+    - name: helm-cli
+      image: zanattabruno/helm-cli
+    imagePullSecrets:
+    - name: dockerhub

@@ -1,0 +1,38 @@
+dbaas:
+  enableHighAvailability: false
+  enableNodeAffinity: true
+  enablePodAntiAffinity: false
+  haReplicas: 3
+  image:
+    name: ric-plt-dbaas
+    registry: nexus3.o-ran-sc.org:10002/o-ran-sc
+    tag: 0.6.1
+  imagePullPolicy: IfNotPresent
+  probeTimeout: 10
+  probeTimeoutCommand: timeout
+  redis:
+    ha_config:
+      appendonly: 'no'
+      loadmodule: /usr/local/libexec/redismodule/libredismodule.so
+      maxmemory: '0'
+      maxmemory-policy: volatile-lru
+      min-slaves-max-lag: 5
+      min-slaves-to-write: 1
+      protected-mode: 'no'
+      save: ''
+    masterGroupName: dbaasmaster
+    sa_config:
+      appendonly: 'no'
+      bind: 0.0.0.0
+      loadmodule: /usr/local/libexec/redismodule/libredismodule.so
+      protected-mode: 'no'
+      save: ''
+  saReplicas: 2
+  sentinel:
+    config:
+      down-after-milliseconds: 5000
+      failover-timeout: 60000
+      parallel-syncs: 1
+    protected-mode: 'no'
+    quorum: 2
+  terminationGracePeriodSeconds: 5
