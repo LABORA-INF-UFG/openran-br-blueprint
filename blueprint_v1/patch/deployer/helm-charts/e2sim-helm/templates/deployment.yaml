@@ -28,7 +28,7 @@ spec:
               containerPort: 8080
               protocol: TCP
           command: ["{{ .Values.image.command }}"]
-          args: ["{{ .Values.image.args.e2term }}", "-g", "{{ .Values.image.args.gNB }}", "-s", "{{ .Values.image.args.id }}"]          
+          args: ["{{ .Values.image.args.e2term }}", "-g", "{{ .Values.image.args.gNB }}", "-s", "{{ .Values.image.args.id }}", "-p", "{{ .Values.image.args.port }}"]          
           #command: ["e2sim-rc"]
           #args: ["service-ricplt-e2term-sctp-alpha.ricplt"]
           #livenessProbe:
@@ -53,3 +53,4 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+

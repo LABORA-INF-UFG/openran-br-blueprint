@@ -1,5 +1,5 @@
 8c8,9
 < kubectl rollout restart deployment e2sim -n ricplt
 ---
-> kubectl rollout restart deployment e2sim1-e2sim-helm -n ricplt
-> kubectl rollout restart deployment e2sim2-e2sim-helm -n ricplt
+> kubectl rollout restart deployment e2simid1-e2sim-helm -n ricplt
+> kubectl rollout restart deployment e2simid2-e2sim-helm -n ricplt

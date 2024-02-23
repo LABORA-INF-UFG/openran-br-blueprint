@@ -3,8 +3,8 @@ fullnameOverride: ''
 image:
   args:
     e2term: 172.30.0.174
-    gNB: 2
-    id: 2
+    gNB: 11
+    id: 11
     port: 32222
   command: e2sim-rc
   pullPolicy: IfNotPresent
