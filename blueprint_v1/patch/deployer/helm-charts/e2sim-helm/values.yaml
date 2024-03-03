@@ -1,0 +1,24 @@
+affinity: {}
+fullnameOverride: ''
+image:
+  args:
+    e2term: 172.30.0.174
+    gNB: 11
+    id: 11
+    port: 32222
+  command: e2sim-rc
+  pullPolicy: IfNotPresent
+  repository: zanattabruno/e2sim-rc
+  tag: ''
+nameOverride: ''
+nodeSelector:
+  kubernetes.io/hostname: openran-br
+podAnnotations: {}
+podSecurityContext: {}
+replicaCount: 1
+resources: {}
+service:
+  port: 8080
+  tls: []
+  type: ClusterIP
+tolerations: []

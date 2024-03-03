@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-deployer
+  namespace: ricinfra
+  labels:
+    app: deployer
+spec:
+  selector:
+    matchLabels:
+      app: deployer
+  template:
+    metadata:
+      labels:
+        app: deployer
+    spec:
+      containers:
+      - name: deployer
+        image: zanattabruno/deployer
+        ports:
+        - containerPort: 5000
+          name: flask-default
+        command: ["python3"]
+        args: ["deployer-fake.py"]
+        imagePullPolicy: Always
+      nodeSelector:
+        kubernetes.io/hostname: node1
+          

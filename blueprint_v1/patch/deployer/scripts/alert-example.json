@@ -1,0 +1,46 @@
+{
+    "alerts": [
+        {
+            "annotations": {},
+            "endsAt": "0001-01-01T00:00:00Z",
+            "fingerprint": "ab79f52020026627",
+            "generatorURL": "http://r4-infrastructure-prometheus-server-7d8b95b77d-ctl64:9090/graph?g0.expr=%28sum+by%28container%2C+instance%2C+name%29+%28rate%28container_cpu_usage_seconds_total%7Bcontainer%3D~%22.%2Axapp%22%7D%5B5m%5D%29%29+%2A+100%29+%3E+80&g0.tab=1",
+            "labels": {
+                "alertname": "HighRICControlLoopLatency",
+                "container": "bouncer-xapp",
+                "instance": "node1",
+                "name": "999929334cb4b39ea76c670a57e1244650a791ac0da8e91a4caaab2cfd1979de",
+                "severity": "warning"
+            },
+            "startsAt": "2022-07-21T01:26:00.759957456Z",
+            "status": "firing"
+        },
+        {
+            "annotations": {},
+            "endsAt": "0001-01-01T00:00:00Z",
+            "fingerprint": "fb3c8fd0de8fe456",
+            "generatorURL": "http://r4-infrastructure-prometheus-server-7d8b95b77d-ctl64:9090/graph?g0.expr=%28sum+by%28container%2C+instance%2C+name%29+%28rate%28container_cpu_usage_seconds_total%7Bcontainer%3D~%22.%2Axapp%22%7D%5B5m%5D%29%29+%2A+100%29+%3E+80&g0.tab=1",
+            "labels": {
+                "alertname": "ContainerCpuUsage",
+                "container": "bouncer-xapp",
+                "instance": "node5",
+                "name": "a16bae2b44d0418b697b049027fc8947e24766e7f23f8e9fc4352fe79c7e80fa",
+                "severity": "warning"
+            },
+            "startsAt": "2022-07-21T01:25:00.759957456Z",
+            "status": "firing"
+        }
+    ],
+    "commonAnnotations": {},
+    "commonLabels": {
+        "alertname": "ContainerCpuUsage",
+        "container": "bouncer-xapp",
+        "severity": "warning"
+    },
+    "externalURL": "http://localhost:9093",
+    "groupKey": "{}/{}:{}",
+    "groupLabels": {},
+    "receiver": "vespa",
+    "status": "firing",
+    "version": "4"
+}

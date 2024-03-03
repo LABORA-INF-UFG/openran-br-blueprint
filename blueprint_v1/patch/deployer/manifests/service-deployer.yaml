@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-deployer
+  namespace: ricinfra
+spec:
+  type: ClusterIP
+  # Uncomment the below line to create a Headless Service
+  # clusterIP: None
+  selector:
+    app: deployer
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: flask-default

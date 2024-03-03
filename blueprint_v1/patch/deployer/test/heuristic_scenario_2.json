@@ -1,0 +1,36 @@
+{
+  "E2Nodes": [
+    {
+      "DB": 1, 
+      "E2Node": 1, 
+      "E2T": 1, 
+      "RIC_MAN": 1, 
+      "SDL": 1, 
+      "xApp1": 3
+    }, 
+    {
+      "DB": 1, 
+      "E2Node": 2, 
+      "E2T": 1, 
+      "RIC_MAN": 1, 
+      "SDL": 1, 
+      "xApp1": 3
+    }, 
+    {
+      "DB": 1, 
+      "E2Node": 3, 
+      "E2T": 1, 
+      "RIC_MAN": 1, 
+      "SDL": 1, 
+      "xApp1": 3
+    }, 
+    {
+      "DB": 1, 
+      "E2Node": 4, 
+      "E2T": 1, 
+      "RIC_MAN": 1, 
+      "SDL": 1, 
+      "xApp1": 3
+    }
+  ]
+}
