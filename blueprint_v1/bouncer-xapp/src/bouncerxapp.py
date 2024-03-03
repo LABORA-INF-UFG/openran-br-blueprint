@@ -32,6 +32,10 @@ import json
 class BouncerXapp:
 
     def __init__(self):
+        # Initializing logger
+        self.logger = Logger(name=__name__)
+        self.logger.set_level(Level.DEBUG)
+        
         # Initiating the RMRXapp framework from ricxappframe module
         fake_sdl = getenv("USE_FAKE_SDL", False)
         self._rmr_xapp = RMRXapp(self._default_handler,
@@ -50,14 +54,14 @@ class BouncerXapp:
         """
         Function that runs when xapp initialization is complete
         """
+        self.logger.info("post_init called")
         rmr_xapp.logger.set_level(Level.DEBUG)
-        rmr_xapp.logger.info("post_init called")
 
     def _handle_config_change(self, rmr_xapp, config):
         """
         Function that runs at start and on every configuration file change.
         """
-        rmr_xapp.logger.info("handle_config_change:: config: {}".format(config))
+        self.logger.info("handle_config_change:: config: {}".format(config))
         rmr_xapp.config = dict(config)  # No mutex required due to GIL
 
     def _handle_act_xapp_msg(self, rmr_xapp:RMRXapp, summary, sbuf):
@@ -65,19 +69,19 @@ class BouncerXapp:
         Function that responds to active xApp RMR message with an ACK
         """
         rcv_payload = json.loads(summary[rmr.RMR_MS_PAYLOAD])
-        rmr_xapp.logger.debug("Received payload = {}".format(rcv_payload))
+        self.logger.debug("Received payload = {}".format(rcv_payload))
         count = rmr_xapp.sdl_find_and_get(namespace="ricplt", prefix="bouncer-xapp-ack-count") # Returns {key: value}
         if count is not None:
-            rmr_xapp.logger.debug("Get count from SDL: {}".format(count))
+            self.logger.debug("Get count from SDL: {}".format(count))
         else:
-            rmr_xapp.logger.debug("SDL has no value for key: {}".format("bouncer-xapp-ack-count"))
+            self.logger.debug("SDL has no value for key: {}".format("bouncer-xapp-ack-count"))
         count = rcv_payload["id"]
-        rmr_xapp.logger.debug("Setting on SDL: {}={}".format("bouncer-xapp-ack-count", count))
+        self.logger.debug("Setting on SDL: {}={}".format("bouncer-xapp-ack-count", count))
         rmr_xapp.sdl_set(namespace="ricplt", key="bouncer-xapp-ack-count", value=str(count))
-        rmr_xapp.logger.info("Replying ACK {} to active xApp {}".format(rcv_payload["id"], rcv_payload["msg"]))
+        self.logger.info("Replying ACK {} to active xApp {}".format(rcv_payload["id"], rcv_payload["msg"]))
         payload = json.dumps({"msg":"ACK", "id":rcv_payload["id"]}).encode()
         if not rmr_xapp.rmr_rts(sbuf, new_payload=payload, new_mtype=Constants.REACT_XAPP_ACK):
-            rmr_xapp.logger.error("Message could not be replied")
+            self.logger.error("Message could not be replied")
 
         rmr_xapp.rmr_free(sbuf)
     
@@ -85,14 +89,14 @@ class BouncerXapp:
         """
         Function called when a Kubernetes signal is received that stops the xApp execution.
         """
-        self._rmr_xapp.logger.info("Received signal {} to stop the xApp".format(signal.Signals(signum).name))
+        self.logger.info("Received signal {} to stop the xApp".format(signal.Signals(signum).name))
         self.stop()
 
     def _default_handler(self, rmr_xapp, summary, sbuf):
         """
         Function that processes messages for which no handler is defined
         """
-        rmr_xapp.logger.info("HWXappdefault_handler called for msg type = " + str(summary[rmr.RMR_MS_MSG_TYPE]))
+        self.logger.info("HWXappdefault_handler called for msg type = " + str(summary[rmr.RMR_MS_MSG_TYPE]))
         rmr_xapp.rmr_free(sbuf)
 
     def createHandlers(self):
@@ -115,13 +119,17 @@ class BouncerXapp:
 
         self.rest_mgr.start_http_server(8080) # Start the HTTP server to log all received GET and POST messages
 
-        self._rmr_xapp.logger.info("start:: calling ApplicationManager to register the xApp")
+        self._rmr_xapp.run(thread=thread, rmr_timeout=5) # Wait 5 second for RMR messages
+
+        # self.logger.info("start:: calling ApplicationManager to register the xApp")
         #self.appmgr.register_xapp()
 
-        self._rmr_xapp.logger.info("start:: calling SubscriptionManager to subscribe to gNBs")
+        # Only gets here if thread=True
+        self.logger.info("start:: xApp health check: {}".format(self._rmr_xapp.healthcheck()))
+        self.logger.info("start:: calling SubscriptionManager to subscribe to gNBs")
         self.sub_mgr.subscribe_to_all_gNBs() # Sending subscription requests for gNBs through SubscriptionManager
 
-        self._rmr_xapp.run(thread=thread, rmr_timeout=5) # Wait 5 second for RMR messages
+        
 
     def stop(self):
         """
