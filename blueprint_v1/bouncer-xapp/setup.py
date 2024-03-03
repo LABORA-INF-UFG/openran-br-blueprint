@@ -24,18 +24,18 @@ def read(fname):
 
 
 setup(
-    name='hw_python',
+    name='bouncerxapp',
     version='0.0.1',
     packages=find_packages(),
-    url='https://gerrit.o-ran-sc.org/r/admin/repos/ric-app/hw-python',
+    url='https://github.com/LABORA-INF-UFG/openran-br-blueprint/',
     license='Apache 2.0',
-    description="Hello World Python XAPP for O-RAN RIC Platform",
+    description="Bouncer Python XAPP for O-RAN RIC Platform",
     long_description=read('README.md'),
-    author='Naman Gupta',
-    author_email='naman.gupta@samsung.com',
+    author='Daniel Campos',
+    author_email='danielcampos@inf.ufg.br',
     python_requires='>=3.8',
-    install_requires=["ricxappframe>=1.1.1,<2.3.0"],
-    entry_points={"console_scripts": ["run-hw-python.py=src.main:launchXapp"]},  # adds a magical entrypoint for Docker
+    install_requires=["ricxappframe>=3.2.0, <3.3.0"],
+    entry_points={"console_scripts": ["run-xapp-entrypoint.py=src.main:launchXapp"]},  # adds a magical entrypoint for Docker
     data_files=[("", ["LICENSE.txt"])],
 )
 

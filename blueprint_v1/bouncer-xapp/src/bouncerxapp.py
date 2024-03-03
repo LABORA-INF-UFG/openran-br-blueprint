@@ -116,7 +116,7 @@ class BouncerXapp:
         self.rest_mgr.start_http_server(8080) # Start the HTTP server to log all received GET and POST messages
 
         self._rmr_xapp.logger.info("start:: calling ApplicationManager to register the xApp")
-        self.appmgr.register_xapp()
+        #self.appmgr.register_xapp()
 
         self._rmr_xapp.logger.info("start:: calling SubscriptionManager to subscribe to gNBs")
         self.sub_mgr.subscribe_to_all_gNBs() # Sending subscription requests for gNBs through SubscriptionManager
@@ -128,6 +128,6 @@ class BouncerXapp:
         can only be called if thread=True when started
         """
         self.sub_mgr.delete_subscriptions()
-        self.appmgr.deregister_xapp()
+        #self.appmgr.deregister_xapp()
         self.rest_mgr.stop_server()
         self._rmr_xapp.stop()

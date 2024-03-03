@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "containers": [
         {
-            "name": "bouncerxapp",
+            "name": "bouncerxappcontainer",
             "image": {
                 "registry": "127.0.0.1:5001",
                 "name": "bouncerxapp",
@@ -15,24 +15,24 @@
         "ports": [
             {
                 "name": "http",
-                "container": "bouncerxapp",
+                "container": "bouncerxappcontainer",
                 "port": 8080,
                 "description": "http service"
             },
             {
                 "name": "rmrroute",
-                "container": "bouncerxapp",
+                "container": "bouncerxappcontainer",
                 "port": 4561,
                 "description": "rmr route port for bouncer xapp"
             },
             {
                 "name": "rmrdata",
-                "container": "bouncerxapp",
+                "container": "bouncerxappcontainer",
                 "port": 4560,
                 "rxMessages": ["RIC_SUB_RESP", "RIC_INDICATION","RIC_SUB_DEL_RESP"],
                 "txMessages": ["RIC_SUB_REQ","RIC_SUB_DEL_REQ"],
                 "policies": [1],
-                "description": "rmr data port for bouncerxapp"
+                "description": "rmr data port for bouncer xapp"
             }
         ]
     },
