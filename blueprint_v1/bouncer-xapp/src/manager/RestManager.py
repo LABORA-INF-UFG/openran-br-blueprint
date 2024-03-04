@@ -3,12 +3,16 @@ import json
 import http.server
 import socketserver
 import threading
+from mdclogpy import Level
+from mdclogpy import Logger
 
 from ._BaseManager import _BaseManager
 
 class RestManager(_BaseManager):
     def __init__(self, rmr_xapp: RMRXapp):
         super().__init__(rmr_xapp)
+        self.logger = Logger(name=__name__)
+        self.logger.set_level(Level.DEBUG)
 
     class DefaultHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
         def __init__(self, *args, rmr_xapp:RMRXapp=None, logger=None, **kwargs):

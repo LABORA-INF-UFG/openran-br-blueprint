@@ -19,6 +19,7 @@
 from os import getenv
 from ricxappframe.xapp_frame import RMRXapp, rmr
 import signal
+import time
 
 from .utils.constants import Constants
 from .manager import *
@@ -127,6 +128,7 @@ class BouncerXapp:
         # Only gets here if thread=True
         self.logger.info("start:: xApp health check: {}".format(self._rmr_xapp.healthcheck()))
         self.logger.info("start:: calling SubscriptionManager to subscribe to gNBs")
+        time.sleep(5) # Wait for the RIC platform to be ready
         self.sub_mgr.subscribe_to_all_gNBs() # Sending subscription requests for gNBs through SubscriptionManager
 
         

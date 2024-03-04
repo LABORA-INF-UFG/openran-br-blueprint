@@ -22,10 +22,13 @@
 import requests
 from ricxappframe.xapp_frame import RMRXapp
 import json
+import mdclogpy
 from ..utils.constants import Constants
 from ._BaseManager import _BaseManager
 from ricxappframe.entities.rnib.nb_identity_pb2 import NbIdentity
 from ricxappframe.entities.rnib.nodeb_info_pb2 import Node
+from mdclogpy import Level
+from mdclogpy import Logger
 
 class SubscriptionManager(_BaseManager):
 
@@ -34,6 +37,8 @@ class SubscriptionManager(_BaseManager):
     def __init__(self, rmr_xapp: RMRXapp):
         super().__init__(rmr_xapp)
         self.subscriptions = {}
+        self.logger = Logger(name=__name__)
+        self.logger.set_level(Level.DEBUG)
 
     def nb_to_dict(self, nb_id):
         nb_id_json = {
