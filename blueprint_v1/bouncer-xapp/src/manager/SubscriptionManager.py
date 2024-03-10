@@ -104,18 +104,10 @@ class SubscriptionManager(_BaseManager):
     def send_subscription_request(self, xnb_inventory_name, subscription_transaction_id):
         self.logger.info("SubscriptionManager.send_subscription_request:: Sending subscription request to {}".format(xnb_inventory_name))
         subscription_request = self.generate_subscription_request(xnb_inventory_name, subscription_transaction_id)
-        # try:
-        #     json_object = json.dumps(subscription_request,indent=4)
-        # except TypeError:
-        #     self.logger.error("SubscriptionManager.send_subscription_request:: Unable to serialize the object")
-        # url = Constants.SUBSCRIPTION_PATH.format(Constants.PLT_NAMESPACE,
-        #                                          Constants.SUBSCRIPTION_SERVICE,
-        #                                          Constants.SUBSCRIPTION_PORT)
-        # url = "http://service-ricplt-submgr-http:3800" # Original
-        url = "http://service-ricplt-submgr-http.ricplt.svc.cluster.local:8088/ric/v1/subscriptions" # RIC-O
+        url = "http://service-ricplt-submgr-http.ricplt.svc.cluster.local:8088/ric/v1/subscriptions"
         try:
             self.logger.info("SubscriptionManager.send_subscription_request:: Sending Node B subscription request to {}: {}".format(url, subscription_request))
-            response = requests.post(url, json=subscription_request) #data=subscription_request) #json=json_object)
+            response = requests.post(url, json=subscription_request)
             data = response.json()
             if response.status_code == 201:
                 self.logger.info("SubscriptionManager.send_subscription_request:: Received OK response from Node B subscription request with data: {}".format(data))

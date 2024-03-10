@@ -20,10 +20,10 @@ from os import getenv
 from ricxappframe.xapp_frame import RMRXapp, rmr
 import signal
 import time
+import binascii
 
 from .utils.constants import Constants
 from .manager import *
-
 from .handler import *
 from mdclogpy import Logger
 from mdclogpy import Level
@@ -50,6 +50,9 @@ class BouncerXapp:
         signal.signal(signal.SIGQUIT, self._handle_signal)
         signal.signal(signal.SIGINT, self._handle_signal)
 
+        # Registering callbacks
+        self._rmr_xapp.register_callback(handler=self._handle_insert_msg, message_type=Constants.E2_INDICATION_INSERT)
+
     # Executes after _BaseXapp init but before ending the RMRXapp init
     def _post_init(self, rmr_xapp: RMRXapp):
         """
@@ -65,24 +68,18 @@ class BouncerXapp:
         self.logger.info("handle_config_change:: config: {}".format(config))
         rmr_xapp.config = dict(config)  # No mutex required due to GIL
 
-    def _handle_act_xapp_msg(self, rmr_xapp:RMRXapp, summary, sbuf):
+    def _handle_insert_msg(self, rmr_xapp:RMRXapp, summary, sbuf):
         """
         Function that responds to active xApp RMR message with an ACK
         """
-        rcv_payload = json.loads(summary[rmr.RMR_MS_PAYLOAD])
-        self.logger.debug("Received payload = {}".format(rcv_payload))
-        count = rmr_xapp.sdl_find_and_get(namespace="ricplt", prefix="bouncer-xapp-ack-count") # Returns {key: value}
-        if count is not None:
-            self.logger.debug("Get count from SDL: {}".format(count))
-        else:
-            self.logger.debug("SDL has no value for key: {}".format("bouncer-xapp-ack-count"))
-        count = rcv_payload["id"]
-        self.logger.debug("Setting on SDL: {}={}".format("bouncer-xapp-ack-count", count))
-        rmr_xapp.sdl_set(namespace="ricplt", key="bouncer-xapp-ack-count", value=str(count))
-        self.logger.info("Replying ACK {} to active xApp {}".format(rcv_payload["id"], rcv_payload["msg"]))
-        payload = json.dumps({"msg":"ACK", "id":rcv_payload["id"]}).encode()
-        if not rmr_xapp.rmr_rts(sbuf, new_payload=payload, new_mtype=Constants.REACT_XAPP_ACK):
-            self.logger.error("Message could not be replied")
+        
+        self.logger.debug("Received insert message from {} with meID={} and subscription id={}. Replying with a control message.".format(
+            summary[rmr.RMR_MS_MSG_SOURCE], summary[rmr.RMR_MS_MEID], summary[rmr.RMR_MS_SUB_ID])
+        )
+        
+        # Return the message to the sender with a new message type
+        if not rmr_xapp.rmr_rts(sbuf, new_mtype=Constants.E2_CONTROL_REQ):
+            self.logger.error("Control message could not be replied")
 
         rmr_xapp.rmr_free(sbuf)
     
