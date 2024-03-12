@@ -79,14 +79,18 @@ class BouncerXapp:
         payload = summary[rmr.RMR_MS_PAYLOAD]
         
         from pyasn1.codec.ber import decoder
-        from pyasn1.type.univ import Any
-        # decoded_payload = decoder.decode(payload, asn1Spec=Any())
-        # self.logger.info("Decoded payload: {}".format(decoded_payload))
+        from pyasn1.type.univ import OctetString
+        try:
+            decoded_payload = decoder.decode(payload, asn1Spec=OctetString())
+            self.logger.info("Decoded payload: {}".format(decoded_payload))
+        except Exception as e:
+            self.logger.error("Error decoding payload: {}".format(e))
         
         # Return the message to the sender with a new message type
         if not rmr_xapp.rmr_rts(sbuf):
             self.logger.error("Control message could not be replied")
-
+        # /home/openran-br/openran-br-blueprint/blueprint_v1/bouncer-rc/Bouncer/asn1c_defs/e2ap-v02.02.03.asn1
+        # /home/openran-br/openran-br-blueprint/blueprint_v1/bouncer-xapp/src/asn1
         rmr_xapp.rmr_free(sbuf)
     
     def _handle_signal(self, signum: int, frame):
