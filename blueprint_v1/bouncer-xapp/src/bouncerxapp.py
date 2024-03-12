@@ -20,7 +20,6 @@ from os import getenv
 from ricxappframe.xapp_frame import RMRXapp, rmr
 import signal
 import time
-import binascii
 
 from .utils.constants import Constants
 from .manager import *
@@ -73,12 +72,19 @@ class BouncerXapp:
         Function that responds to active xApp RMR message with an ACK
         """
         
-        self.logger.debug("Received insert message from {} with meID={} and subscription id={}. Replying with a control message.".format(
+        self.logger.info("Received insert message from {} with meID={} and subscription id={}. Replying with a control message.".format(
             summary[rmr.RMR_MS_MSG_SOURCE], summary[rmr.RMR_MS_MEID], summary[rmr.RMR_MS_SUB_ID])
         )
+
+        payload = summary[rmr.RMR_MS_PAYLOAD]
+        
+        from pyasn1.codec.ber import decoder
+        from pyasn1.type.univ import Any
+        # decoded_payload = decoder.decode(payload, asn1Spec=Any())
+        # self.logger.info("Decoded payload: {}".format(decoded_payload))
         
         # Return the message to the sender with a new message type
-        if not rmr_xapp.rmr_rts(sbuf, new_mtype=Constants.E2_CONTROL_REQ):
+        if not rmr_xapp.rmr_rts(sbuf):
             self.logger.error("Control message could not be replied")
 
         rmr_xapp.rmr_free(sbuf)

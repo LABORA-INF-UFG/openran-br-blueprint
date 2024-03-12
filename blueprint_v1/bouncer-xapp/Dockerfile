@@ -46,7 +46,7 @@ ENV RMR_SEED_RT=/opt/route/routes.rt
 ENV RMR_LOG_VLEVEL=4
 
 RUN git clone -b ${frame_version} https://github.com/o-ran-sc/ric-plt-xapp-frame-py /ric-plt-xapp-frame-py/
-RUN pip install --upgrade pip && pip install certifi six python_dateutil setuptools urllib3 logger requests inotify_simple mdclogpy google-api-python-client msgpack ricsdl
+RUN pip install --upgrade pip && pip install certifi six python_dateutil setuptools urllib3 logger requests inotify_simple mdclogpy google-api-python-client msgpack ricsdl pyasn1
 RUN touch /ric-plt-xapp-frame-py/ricxappframe/entities/__init__.py && touch /ric-plt-xapp-frame-py/ricxappframe/entities/rnib/__init__.py
 RUN pip install /ric-plt-xapp-frame-py/
 
