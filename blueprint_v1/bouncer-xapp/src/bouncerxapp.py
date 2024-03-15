@@ -28,6 +28,7 @@ from mdclogpy import Logger
 from mdclogpy import Level
 
 import json
+import asn1_defs.ASN1_DEFS as asn1
 
 class BouncerXapp:
 
@@ -78,13 +79,11 @@ class BouncerXapp:
 
         payload = summary[rmr.RMR_MS_PAYLOAD]
         
-        from pyasn1.codec.ber import decoder
-        from pyasn1.type.univ import OctetString
-        try:
-            decoded_payload = decoder.decode(payload, asn1Spec=OctetString())
-            self.logger.info("Decoded payload: {}".format(decoded_payload))
-        except Exception as e:
-            self.logger.error("Error decoding payload: {}".format(e))
+        # try:
+        #     decoded_payload = decoder.decode(payload, asn1Spec=OctetString())
+        #     self.logger.info("Decoded payload: {}".format(decoded_payload))
+        # except Exception as e:
+        #     self.logger.error("Error decoding payload: {}".format(e))
         
         # Return the message to the sender with a new message type
         if not rmr_xapp.rmr_rts(sbuf):
