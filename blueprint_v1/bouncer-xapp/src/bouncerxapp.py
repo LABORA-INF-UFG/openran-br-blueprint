@@ -20,15 +20,14 @@ from os import getenv
 from ricxappframe.xapp_frame import RMRXapp, rmr
 import signal
 import time
+from binascii import unhexlify, hexlify
 
 from .utils.constants import Constants
 from .manager import *
 from .handler import *
+from .asn1_defs import ASN1_DEFS as e2sm_rc
 from mdclogpy import Logger
 from mdclogpy import Level
-
-import json
-import asn1_defs.ASN1_DEFS as asn1
 
 class BouncerXapp:
 
@@ -79,17 +78,17 @@ class BouncerXapp:
 
         payload = summary[rmr.RMR_MS_PAYLOAD]
         
-        # try:
-        #     decoded_payload = decoder.decode(payload, asn1Spec=OctetString())
-        #     self.logger.info("Decoded payload: {}".format(decoded_payload))
-        # except Exception as e:
-        #     self.logger.error("Error decoding payload: {}".format(e))
+        try: 
+            # asn1obj = e2sm_rc.ASN1Obj()
+            asn1obj = e2sm_rc.E2SM_RC_IEs.E2SM_RC_IndicationMessage
+            decoded = asn1obj.from_aper(payload)
+            self.logger.info("Decoded payload: {}".format(decoded()))
+        except Exception as e:
+            self.logger.error("Error decoding payload: {}".format(e))
         
         # Return the message to the sender with a new message type
         if not rmr_xapp.rmr_rts(sbuf):
             self.logger.error("Control message could not be replied")
-        # /home/openran-br/openran-br-blueprint/blueprint_v1/bouncer-rc/Bouncer/asn1c_defs/e2ap-v02.02.03.asn1
-        # /home/openran-br/openran-br-blueprint/blueprint_v1/bouncer-xapp/src/asn1
         rmr_xapp.rmr_free(sbuf)
     
     def _handle_signal(self, signum: int, frame):

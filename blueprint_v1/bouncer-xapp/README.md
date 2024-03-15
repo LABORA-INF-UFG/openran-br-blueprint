@@ -27,7 +27,7 @@ python pycrate/tools/pycrate_asn1compile.py -i openran-br-blueprint/blueprint_v1
 ```
 
 ## Troubleshoot
-Sometimes the E2SIMs may start before the E2 Term is ready, which may cause the E2 nodes to not be registered in the SDL. If the xApp logs `Number of gNBs: 0`, then restart the E2SIMs with this script:
+Sometimes the E2SIMs may start before the E2 Term is ready, which may cause the E2 nodes to not be registered in the SDL. If the xApp logs `"Number of gNBs: 0"`, then restart the E2SIMs with this script:
 ```bash
 restart_E2SIMs_script
 ```
