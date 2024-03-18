@@ -23,7 +23,7 @@ When the xApp is uninstalled (by the dms_cli uninstall command), the xApp receiv
 ## ASN.1
 The ASN.1 messages are encoded/decode using the [Pycrate](https://github.com/P1sec/pycrate) library. The ASN.1 message structure definitions are in `src/asn1_defs/`. They are compiled using the `pycrate/tools/pycrate_asn1compile.py` script. The only change from bouncer-rc original `.asn.1` files is replacing `2^32` by `4294967296`, since the compiler doesn't understand the `^` syntax. If you want to recompile the ASN.1 definitions, clone the Pycrate repository and execute this command to generate the `ASN1_DEFS.py` file:
 ```bash
-python pycrate/tools/pycrate_asn1compile.py -i openran-br-blueprint/blueprint_v1/bouncer-xapp/src/asn1_defs/e2ap-v02.02.03.asn1 openran-br-blueprint/blueprint_v1/bouncer-xapp/src/asn1_defs/e2sm-v02.01.asn1 openran-br-blueprint/blueprint_v1/bouncer-xapp/src/asn1_defs/e2sm-rc-v01.02.03.asn1 -o ASN1_DEFS
+python pycrate/tools/pycrate_asn1compile.py -i openran-br-blueprint/blueprint_v1/bouncer-xapp/src/asn1_defs/e2ap-v02.02.03.asn1 openran-br-blueprint/blueprint_v1/bouncer-xapp/src/asn1_defs/e2sm-v02.01.asn1 openran-br-blueprint/blueprint_v1/bouncer-xapp/src/asn1_defs/e2sm-rc-v01.02.03.asn1 openran-br-blueprint/blueprint_v1/bouncer-xapp/src/asn1_defs/e2sm-Bouncer-v001.asn1 -o ASN1_DEFS
 ```
 
 ## Troubleshoot

@@ -3,3 +3,4 @@ blueprint_v1/e2sim/
 blueprint_v1/03_receiver/
 blueprint_v1/03_transmitter/
 *.zip
+blueprint_v1/bouncer-xapp/src/asn1_defs/__pycache__/*

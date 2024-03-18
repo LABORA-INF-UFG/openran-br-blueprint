@@ -77,10 +77,10 @@ class BouncerXapp:
         )
 
         payload = summary[rmr.RMR_MS_PAYLOAD]
-        
+        self.logger.debug("Payload: {}".format(payload))
         try: 
             # asn1obj = e2sm_rc.ASN1Obj()
-            asn1obj = e2sm_rc.E2SM_RC_IEs.E2SM_RC_IndicationMessage
+            asn1obj = e2sm_rc.E2AP_IEs.RICindicationMessage
             decoded = asn1obj.from_aper(payload)
             self.logger.info("Decoded payload: {}".format(decoded()))
         except Exception as e:

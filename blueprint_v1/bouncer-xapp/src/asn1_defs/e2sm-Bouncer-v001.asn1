@@ -1,0 +1,215 @@
+# ==================================================================================
+# Copyright (c) 2020 HCL Technologies Limited.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ==================================================================================
+
+-- ASN1START
+-- **************************************************************
+-- E2SM-Bouncer
+-- Information Element Definitions
+-- 
+-- **************************************************************
+
+E2SM-Bouncer-IEs { }
+
+DEFINITIONS AUTOMATIC TAGS ::= 
+
+BEGIN
+
+-- **************************************************************
+--
+-- Lists
+--
+-- **************************************************************
+
+maxofRANParameters						INTEGER ::= 255
+
+-- E2 Service model IEs
+
+-- ---------------------------------------------------
+-- Event Trigger Definition OCTET STRING contents
+-- ---------------------------------------------------
+
+-- E2SM-Bouncer-EventTriggerDefinition IE
+E2SM-Bouncer-EventTriggerDefinition ::= CHOICE{
+	eventDefinition-Format1		E2SM-Bouncer-EventTriggerDefinition-Format1,
+	...
+}
+
+-- E2SM-Bouncer-eventTriggerDefinition IE Format 1
+E2SM-Bouncer-EventTriggerDefinition-Format1 ::= SEQUENCE{
+	triggerNature						B-TriggerNature,
+	...
+}
+
+-- ---------------------------------------------------
+-- Action Definition OCTET STRING contents
+-- ---------------------------------------------------
+E2SM-Bouncer-ActionDefinition ::= CHOICE{
+	actionDefinition-Format1		E2SM-Bouncer-ActionDefinition-Format1,
+	...
+}
+
+-- E2SM-Bouncer-actionDefinition IE used for Action Format 1
+E2SM-Bouncer-ActionDefinition-Format1 ::= SEQUENCE{
+	ranParameter-List					SEQUENCE (SIZE(1..maxofRANParameters)) OF RANparameter-Item OPTIONAL,
+	...
+}
+
+
+
+-- ---------------------------------------------------
+-- Indication Header OCTET STRING contents
+-- ---------------------------------------------------
+
+E2SM-Bouncer-IndicationHeader ::= CHOICE{
+	indicationHeader-Format1		E2SM-Bouncer-IndicationHeader-Format1,
+	...
+}
+
+-- E2SM-Bouncer-indicationHeader Format 1
+E2SM-Bouncer-IndicationHeader-Format1 ::= SEQUENCE{
+	indicationHeaderParam			     B-Header,
+	...
+}
+
+-- ---------------------------------------------------
+-- Indication Message OCTET STRING contents
+-- ---------------------------------------------------
+
+-- E2SM-Bouncer-indicationMessage IE
+E2SM-Bouncer-IndicationMessage ::= CHOICE{
+	indicationMessage-Format1		E2SM-Bouncer-IndicationMessage-Format1,
+	...
+}
+
+-- E2SM-Bouncer-IndicationMessage Format 1
+E2SM-Bouncer-IndicationMessage-Format1 ::= SEQUENCE{
+        indicationMsgParam                            B-Message,
+        ...
+}
+
+
+-- ---------------------------------------------------
+-- Call Process ID
+-- ---------------------------------------------------
+
+-- Not defined in this E2SM
+
+-- ---------------------------------------------------
+-- Control Header OCTET STRING contents
+-- ---------------------------------------------------
+
+-- E2SM-Bouncer-ControlHeader
+E2SM-Bouncer-ControlHeader ::= CHOICE{
+	controlHeader-Format1		E2SM-Bouncer-ControlHeader-Format1,
+	...
+}
+
+-- E2SM-Bouncer-ControlHeader Format 1
+E2SM-Bouncer-ControlHeader-Format1 ::= SEQUENCE{
+	controlHeaderParam			B-Header,
+	...
+}
+
+
+-- ---------------------------------------------------
+-- Control Message OCTET STRING contents
+-- ---------------------------------------------------
+
+-- E2SM-Bouncer-ControlMessage
+E2SM-Bouncer-ControlMessage ::= CHOICE{
+	controlMessage-Format1		E2SM-Bouncer-ControlMessage-Format1,
+	...
+}
+
+-- E2SM-Bouncer-controlMessage Format 1
+E2SM-Bouncer-ControlMessage-Format1 ::= SEQUENCE{
+	controlMsgParam				B-Message,
+	...
+}
+
+-- ---------------------------------------------------
+-- commmon IEs
+-- ---------------------------------------------------
+
+-- A
+-- B
+-- C
+-- D
+-- E
+-- F
+-- G
+-- H
+
+B-Header ::= INTEGER
+
+B-Message ::= OCTET STRING
+
+B-TriggerNature ::= ENUMERATED{
+	now,
+	onchange,
+	...
+}
+-- I
+-- J
+-- K
+-- L
+-- M
+-- N
+-- O
+-- P
+-- Q
+-- R
+
+
+RANparameter-Item ::= SEQUENCE {
+	ranParameter-ID			RANparameter-ID,
+	ranParameter-Name		RANparameter-Name,
+	ranParameter-Test		RANparameter-Test,
+	ranParameter-Value		RANparameter-Value,
+	...
+}
+
+
+RANparameter-ID ::= INTEGER (0..maxofRANParameters)
+
+RANparameter-Name ::= OCTET STRING
+
+RANparameter-Test ::= ENUMERATED{
+	equal,
+	greaterthan,
+	lessthan,
+	contains,
+	present,
+	...
+}
+
+RANparameter-Value ::= OCTET STRING
+
+-- S
+-- T
+-- U
+-- V
+-- W
+-- X
+-- Y
+-- Z
+
+END
+-- ASN1STOP
+
+
+
+
