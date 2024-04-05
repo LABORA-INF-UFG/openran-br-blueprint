@@ -25,7 +25,7 @@ def read(fname):
 
 setup(
     name='bouncerxapp',
-    version='0.0.1',
+    version='1.0.0',
     packages=find_packages(),
     url='https://github.com/LABORA-INF-UFG/openran-br-blueprint/',
     license='Apache 2.0',
