@@ -4,3 +4,4 @@ blueprint_v1/03_receiver/
 blueprint_v1/03_transmitter/
 *.zip
 blueprint_v1/bouncer-xapp/src/asn1_defs/__pycache__/*
+blueprint_v1/patch/deployer/helm-charts/e2sim-helm/values.yaml
