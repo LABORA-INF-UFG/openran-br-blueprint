@@ -1,4 +1,4 @@
-import ASN1_DEFS as asn1_defs
+import e2ap, e2sm_bouncer
 from binascii import hexlify, unhexlify
 
 encoded = b'00050069000008001d000500007b0032000500020001000f000101001b00020070001c000140001900111020000001003734378001010104000000001a0025242000010001014400000001024400000001034400000001042a0009003734370000000ff0001400050470000000'
@@ -6,6 +6,25 @@ encoded = b'00050069000008001d000500007b0032000500020001000f000101001b0002007000
 print("Encoded:", encoded)
 print("Hexlify:", hexlify(encoded))
 print("Unhexlify:", unhexlify(hexlify(encoded)))
+
+obj = e2ap.E2AP_PDU_Descriptions.E2AP_PDU
+obj.from_aper(encoded)
+val = obj.get_val()
+print("PDU Values:")
+print(val[0])
+for k, v in val[1].items():
+    print(k,"=", v)
+sm_encoded = val[1]["value"][1]
+obj = e2sm_bouncer.E2SM_Bouncer_IEs.E2SM_Bouncer_IndicationHeader
+obj.from_aper(sm_encoded)
+sm_decoded = obj.get_val()
+print("SM Values:")
+print(sm_decoded[0])
+for k, v in sm_decoded[1].items():
+    print(k,"=", v)
+
+#print(val)
+exit()
 
 # E2SM_Bouncer_IEs
 
