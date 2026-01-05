@@ -25,4 +25,12 @@ More information and deployment guide:
 - Consultancy on Kubernetes and deployment: Gustavo Zannata Bruno (UNISINOS)
 - Testing: OpenRAN@Brasil Fase 2 team
 
-We especially thank Alexandre Huff for his support and for providing his E2SIM for this project.
+**Blueprint v2**
+
+- Image construction: Gabriel M. Almeida (UFG)
+- xApp development: Alexandre Huff (UTFPR)
+- xApps validation: Andrey Oliveira (UFPA), William Teixeira Pires Junior (UFG)
+- GUARA-ns development: Ben Hur Faria (UFG), Daniel Campos (UFG), Gabriel Almeida (UFG), William Teixeira Pires Junior (UFG)
+- NORI/ns-3 development: Andrey Oliveira (UFPA), Cleverson Nahum (UFPA), João Albuquerque (UFPA), Raissa Costa (UFPA)
+- Consultancy on OSC platform: Alexandre Huff (UTFPR)
+- Testing: OpenRAN@Brasil Fase 2 team
