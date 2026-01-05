@@ -4,6 +4,7 @@ The OpenRAN@Brasil Blueprint is a virtual machine image containing an already in
 More information and deployment guide:
  - [OpenRAN@Brasil Blueprint v0](https://github.com/LABORA-INF-UFG/openran-br-blueprint/wiki/OpenRAN@Brasil-Blueprint-v0)
  - [OpenRAN@Brasil Blueprint v1](https://github.com/LABORA-INF-UFG/openran-br-blueprint/wiki/OpenRAN@Brasil-Blueprint-v1)
+ - [OpenRAN@Brasil Blueprint v2](https://github.com/LABORA-INF-UFG/openran-br-blueprint/wiki/OpenRAN@Brasil-Blueprint-v2)
 
 
 ## Credits
