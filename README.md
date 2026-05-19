@@ -5,6 +5,7 @@ More information and deployment guide:
  - [OpenRAN@Brasil Blueprint v0](https://github.com/LABORA-INF-UFG/openran-br-blueprint/wiki/OpenRAN@Brasil-Blueprint-v0)
  - [OpenRAN@Brasil Blueprint v1](https://github.com/LABORA-INF-UFG/openran-br-blueprint/wiki/OpenRAN@Brasil-Blueprint-v1)
  - [OpenRAN@Brasil Blueprint v2](https://github.com/LABORA-INF-UFG/openran-br-blueprint/wiki/OpenRAN@Brasil-Blueprint-v2)
+ - [OpenRAN@Brasil Blueprint v3](https://github.com/LABORA-INF-UFG/openran-br-blueprint/wiki/OpenRAN@Brasil-Blueprint-v3)
 
 
 ## Credits
@@ -33,4 +34,12 @@ More information and deployment guide:
 - GUARA-ns development: Ben Hur Faria (UFG), Daniel Campos (UFG), Gabriel Almeida (UFG), William Teixeira Pires Junior (UFG)
 - NORI/ns-3 development: Andrey Oliveira (UFPA), Cleverson Nahum (UFPA), João Albuquerque (UFPA), Raissa Costa (UFPA)
 - Consultancy on OSC platform: Alexandre Huff (UTFPR)
+- Testing: OpenRAN@Brasil Fase 2 team
+
+**Blueprint v3**
+
+- Image construction: Gabriel M. Almeida (UFG)
+- xApps validation: Ben Hur Faria (UFG), William Teixeira Pires Junior (UFG)
+- GUARA-ns development: Ben Hur Faria (UFG), Gabriel Almeida (UFG), William Teixeira Pires Junior (UFG)
+- NORI/ns-3 development: Andrey Oliveira (UFPA), Cleverson Nahum (UFPA), João Albuquerque (UFPA), Raissa Costa (UFPA)
 - Testing: OpenRAN@Brasil Fase 2 team
